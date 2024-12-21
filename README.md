@@ -2,17 +2,36 @@
 
 [Demo](https://pravosleva.pro/dist.hacker-news-2024/)
 
-## Install deps
+## Requirements of tech stack
+- [x] React, Redux, React Router
+- [x] Workers for main request list
+  - [x] Shared Worker
+  - [x] Dedicated Worker (if Shared Worker not supported)
+
+## FAQ
+Q: Why Hash Router?
+A: hash router for easy external NGINX setttings - could be changed to browser router
+
+Q: Why Wokers used?
+A: For better browser performance
+
+Q: Why Vite not latest?
+A: Cuz its unstable yet =)
+
+Q: Why so much request in browser?
+A: Polling used for refresh each comment per 60 sec - I think, it's logical (could be turned off if necessary)
+
+### Install deps
 ```shell
 yarn
 ```
 
-## Preview mode on http://localhost:3000
+### Preview mode on http://localhost:3000
 ```shell
 yarn build && yarn preview
 ```
 
-## Development mode on http://localhost:3001
+### Development mode on http://localhost:3001
 ```shell
 yarn dev
 ```
