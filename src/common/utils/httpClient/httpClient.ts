@@ -25,7 +25,7 @@ class Singleton extends API {
     this.getNewsTokenSource = axios.CancelToken.source()
 
     const data = await this.api<number[]>({
-      url: '/topstories.json?print=pretty',
+      url: '/newstories.json?print=pretty',
       method: 'GET',
       cancelToken: this.getNewsTokenSource.token,
     })
