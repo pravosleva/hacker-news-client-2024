@@ -3,10 +3,15 @@
 [Demo](https://pravosleva.pro/dist.hacker-news-2024/)
 
 ## Requirements of tech stack
-- [x] React, Redux, React Router
+- [x] React
+- [x] Redux
+- [x] React Router v6.x
+
+## Original features
 - [x] Workers for main request queue
   - [x] Shared Worker
   - [x] Dedicated Worker (if Shared Worker not supported)
+  - [x] Configurable cache time (newstories list)
 
 ## FAQ
 Q: Why Hash Router?
