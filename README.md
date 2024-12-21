@@ -4,7 +4,7 @@
 
 ## Requirements of tech stack
 - [x] React, Redux, React Router
-- [x] Workers for main request list
+- [x] Workers for main request queue
   - [x] Shared Worker
   - [x] Dedicated Worker (if Shared Worker not supported)
 
