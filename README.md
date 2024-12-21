@@ -1,3 +1,22 @@
+# Hacker News Client
+
+[Demo](https://pravosleva.pro/dist.hacker-news-2024/)
+
+## Install deps
+```shell
+yarn
+```
+
+## Preview mode on http://localhost:3000
+```shell
+yarn build && yarn preview
+```
+
+## Development mode on http://localhost:3001
+```shell
+yarn dev
+```
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
