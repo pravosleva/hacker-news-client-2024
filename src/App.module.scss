@@ -1,0 +1,40 @@
+.stack0 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+.stack1 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.stack2 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.stack3 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.stack4 {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.preNormalized {
+  font-size: .85rem;
+  background: hsla(0,0%,0%,.04);
+  border: none;
+  border-radius: 8px;
+  word-wrap: normal;
+  padding: 1.45rem;
+
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}

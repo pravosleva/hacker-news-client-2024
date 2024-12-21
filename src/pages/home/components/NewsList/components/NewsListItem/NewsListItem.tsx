@@ -1,0 +1,64 @@
+import { memo, useMemo } from 'react'
+// import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { TStore } from '~/common/store'
+import { TNewsItemDetails } from '~/common/store/reducers/newsSlice'
+import { ErrorFallback } from '~/common/components'
+import { ErrorBoundary } from 'react-error-boundary'
+// import { getNormalizedDateTime } from '~/common/utils/time-ops'
+import { BasicCard } from './components'
+import { Alert, Skeleton } from '@mui/material'
+
+type TProps = {
+  newsItemId: number;
+}
+
+export const NewsListItem = memo(({ newsItemId }: TProps) => {
+  const details = useSelector((s: TStore) => s.news.details)
+  const itemData = useMemo<TNewsItemDetails | undefined>(() => details[String(newsItemId)], [details[String(newsItemId)]])
+
+  const errors = useSelector((s: TStore) => s.news.errors)
+  const itemErrorInfo = useMemo<string | undefined>(() => errors[String(newsItemId)], [errors[String(newsItemId)]])
+
+  const MemozedNewsItem = useMemo(() => {
+    switch (true) {
+      case !!itemData:
+        return (
+          <BasicCard
+            id={itemData.id}
+            title={itemData.title}
+            rating={itemData.score}
+            publishUnixTime={itemData.time}
+            author={itemData.by}
+            errorMessage={itemErrorInfo}
+            localLink={`/news/${itemData.id}`}
+          />
+        )
+      case !!itemErrorInfo:
+        return (
+          <Alert
+            title={`#${newsItemId} ERRORED`}
+            variant='filled'
+            severity='error'
+          >
+            {itemErrorInfo}
+          </Alert>
+        )
+      default:
+        return (
+          <Skeleton animation='wave' />
+        )
+    }
+  }, [itemData, itemErrorInfo, newsItemId])
+
+  return (
+    <ErrorBoundary
+      fallbackRender={ErrorFallback}
+      // onReset={(details) => {
+      //   // NOTE: Reset the state of your app so the error doesn't happen again
+      // }}
+    >
+      {MemozedNewsItem}
+    </ErrorBoundary>
+  )
+})

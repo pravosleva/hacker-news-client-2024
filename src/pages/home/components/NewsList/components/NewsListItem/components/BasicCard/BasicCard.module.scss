@@ -1,0 +1,34 @@
+@keyframes shakeX {
+  0%,
+  to {
+    -webkit-transform:translateZ(0);
+    transform:translateZ(0)
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform:translate3d(-10px,0,0);
+    transform:translate3d(-10px,0,0)
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    -webkit-transform:translate3d(10px,0,0);
+    transform:translate3d(10px,0,0)
+  }
+}
+.animate__shakeX {
+  -webkit-animation-name:shakeX;
+  animation-name:shakeX
+}
+.transition {
+  transition: all 2s ease;
+}
+.isActive {
+  transform: rotate(-1.5deg);
+  // box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}

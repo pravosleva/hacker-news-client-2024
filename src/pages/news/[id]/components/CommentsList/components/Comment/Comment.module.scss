@@ -1,0 +1,55 @@
+.wrapper {
+  border: 1px solid lightgray;
+  border-left: 4px solid lightgray;
+  padding: 16px;
+
+  & pre, & a {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  }
+
+  // &:hover {}
+
+  position: relative;
+  .commentslabel {
+    position: absolute;
+    left: 0;
+    bottom:0;
+    background-color: lightgray;
+    color: #fff;
+    padding: 0px 10px 0px 5px;
+    display: flex;
+    align-items: center;
+    font-size: small;
+    font-weight: bold;
+  }
+}
+
+.level1 {
+  cursor: pointer;
+  margin-left: 0px;
+}
+.level2 {
+  margin-left: 24px;
+}
+.level3 {
+  margin-left: 48px;
+}
+.level4 {
+  margin-left: 72px;
+}
+.level5 {
+  margin-left: 96px;
+}
+.level6 {
+  margin-left: 120px;
+}
+.level7 {
+  margin-left: 144px;
+}
+.level8 {
+  margin-left: 168px;
+}
