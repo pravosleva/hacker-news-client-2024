@@ -3,9 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="%VITE_PUBLIC_URL%/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>%VITE_BRAND_NAME%</title>
     <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <script
+      async
+      src='https://www.googletagmanager.com/gtag/js?id=UA-169297642-1'
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('config', 'UA-169297642-1', { page_path: window.location.pathname });
+    </script>
   </head>
   <body>
     <div id="root"></div>
