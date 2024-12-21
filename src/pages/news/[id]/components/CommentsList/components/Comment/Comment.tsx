@@ -75,7 +75,7 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
   return (
     <>
       <div
-        className={clsx(classes[`level${level}`], classes.wrapper, baseClasses.stack1)}
+        className={clsx(classes[`level${level}`], classes.wrapper, baseClasses.stack2)}
         onClick={handleClick}
         id={String(id)}
       >
@@ -93,13 +93,10 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       flexWrap: 'wrap',
+                      gap: '16px',
                     }}
                   >
-                    {
-                      !!itemData?.by
-                        ? <b>#{id} by {itemData?.by}</b>
-                        : <b>#{id}</b>
-                    }
+                    <b>#{itemData?.id}</b>
                     {!!itemData?.parent && (
                       <Button
                         variant='text'
@@ -114,19 +111,21 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
                 )
               }
 
+              {!!itemData?.by && <span>by <b>{itemData?.by}</b></span>}
+
               {
                 itemData?.deleted && (
-                  <>
+                  <div className={baseClasses.stack1}>
                     <Alert
                       variant='filled'
                       severity='warning'
                     >
-                      #{id} DELETED
+                      DELETED
                     </Alert>
                     <pre className={baseClasses.preNormalized}>
                       {JSON.stringify(itemData, null, 2)}
                     </pre>
-                  </>
+                  </div>
                 )
               }
               {
@@ -135,16 +134,14 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
                     variant='filled'
                     severity='error'
                   >
-                    #{id} ERRORED: {itemErrorInfo}
+                    ERRORED: {itemErrorInfo}
                   </Alert>
                 )
               }
               
               {
                 !!itemData?.url && (
-                  <a href={itemData.url} target='_blank'>
-                    {itemData.url}
-                  </a>
+                  <a href={itemData.url} target='_blank'>{itemData.url}</a>
                 )
               }
               {
