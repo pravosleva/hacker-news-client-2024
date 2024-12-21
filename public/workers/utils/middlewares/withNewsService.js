@@ -171,7 +171,7 @@ const withNewsService = async ({
                         },
                       },
                       url: {
-                        isRequired: true,
+                        isRequired: false,
                         type: 'string',
                         descr: 'URL-адрес истории.',
                         validate: (val) => ({ ok: typeof val === 'string' && !!val, reason: 'Ожидается непустая строка' }),
