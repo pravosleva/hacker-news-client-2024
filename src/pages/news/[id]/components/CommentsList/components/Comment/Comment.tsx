@@ -92,6 +92,7 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                       alignItems: 'center',
+                      flexWrap: 'wrap',
                     }}
                   >
                     {
