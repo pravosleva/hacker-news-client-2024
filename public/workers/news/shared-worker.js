@@ -147,27 +147,44 @@ let port // TODO? var ports = new Map()
                     data: e.data,
                     name: 'SharedWorker получил результат от своего сервиса',
                   })
+
+                  const sendError = () => {
+                    port.postMessage({
+                      __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_ERRORED,
+                      data: {
+                        output,
+                        _service: {
+                          tsList: _perfInfo.tsList,
+                          ..._service,
+                        },
+                      },
+                    })
+                  }
+                  const sendData = () => {
+                    port.postMessage({
+                      __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_RECEIVED,
+                      data: {
+                        output,
+                        _service: {
+                          tsList: _perfInfo.tsList,
+                          ..._service,
+                        },
+                      },
+                    })
+                  }
                   
-                  if (output.ok) port.postMessage({
-                    __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_RECEIVED,
-                    data: {
-                      output,
-                      _service: {
-                        tsList: _perfInfo.tsList,
-                        ..._service,
-                      },
-                    },
-                  })
-                  else port.postMessage({
-                    __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_ERRORED,
-                    data: {
-                      output,
-                      _service: {
-                        tsList: _perfInfo.tsList,
-                        ..._service,
-                      },
-                    },
-                  })
+                  switch (true) {
+                    case !output.ok:
+                      sendError()
+                      // -- NOTE: (Exp) Отправим в любом случае
+                      sendData()
+                      // --
+                      break
+                    default:
+                      // NOTE: Success
+                      sendData()
+                      break
+                  }
                 }
               },
             })

@@ -28,7 +28,7 @@ export const NewsItemPage = memo(() => {
   const dispatch = useDispatch()
 
   const errors = useSelector((s: TStore) => s.news.errors)
-  const itemErrorInfo = useMemo<string | undefined>(() => !!id ? errors[id] : undefined, [id])
+  const itemErrorInfo = useMemo<string | undefined>(() => !!id ? errors[id] : undefined, [id, errors])
 
   const handleEachResponse = useCallback(({ data }: {
     data: NResponse.TMinimalStandart<TNewsItemDetails>;
@@ -92,13 +92,22 @@ export const NewsItemPage = memo(() => {
         }
         {
           !!itemErrorInfo && (
-            <Alert
-              title={`#${id} ERRORED`}
-              variant='filled'
-              severity='error'
-            >
-              {itemErrorInfo}
-            </Alert>
+            <>
+              <Alert
+                title={`#${id} ERRORED`}
+                variant='filled'
+                severity='error'
+              >
+                {itemErrorInfo}
+              </Alert>
+              {
+                !!itemData && (
+                  <pre className={baseClasses.preNormalized}>
+                    {JSON.stringify(itemData, null, 2)}
+                  </pre>
+                )
+              }
+            </>
           )
         }
         {

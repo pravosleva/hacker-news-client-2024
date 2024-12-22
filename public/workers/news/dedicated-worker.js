@@ -136,28 +136,45 @@ var window = self;
                   data: e.data,
                   name: 'Worker получил результат от своего сервиса',
                 })
+
+                const sendError = () => {
+                  self.postMessage({
+                    __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_ERRORED,
+                    data: {
+                      _service: {
+                        tsList: _perfInfo.tsList,
+                        ..._service,
+                      },
+                      output,
+                    },
+                  })
+                }
+                const sendData = () => {
+                  self.postMessage({
+                    __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_RECEIVED,
+                    data: {
+                      _service: {
+                        tsList: _perfInfo.tsList,
+                        ..._service,
+                      },
+                      output,
+                    },
+                  })
+                }
                 
-                // if (output.)
-                if (output.ok) self.postMessage({
-                  __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_RECEIVED,
-                  data: {
-                    _service: {
-                      tsList: _perfInfo.tsList,
-                      ..._service,
-                    },
-                    output,
-                  },
-                })
-                else self.postMessage({
-                  __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_ERRORED,
-                  data: {
-                    _service: {
-                      tsList: _perfInfo.tsList,
-                      ..._service,
-                    },
-                    output,
-                  },
-                })
+                switch (true) {
+                  case !output.ok:
+                    // NOTE: Send error
+                    sendError()
+                    // -- NOTE: (Exp) Отправим в любом случае
+                    sendData()
+                    // --
+                    break
+                  default:
+                    // NOTE: Success
+                    sendData()
+                    break
+                }
               }
             },
           })

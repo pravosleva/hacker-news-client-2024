@@ -217,12 +217,7 @@ const withNewsService = async ({
               // console.log(eventData?.input?.opsEventType) // NOTE: c-w:news:get-items
               if (debugConfig.workerEvs.mwsInternalLogs.isEnabled) log({
                 label: `c->(worker):port:listener:opsEventType:${eventData?.input?.opsEventType}->[cb]`,
-                msgs: [
-                  'input',
-                  input,
-                  'output',
-                  output,
-                ],
+                msgs: ['input', input, 'output', output],
               })
 
               cb[eventData.input.opsEventType]({
