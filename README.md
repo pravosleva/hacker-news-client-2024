@@ -4,7 +4,11 @@ This is client application for https://github.com/HackerNews/API
 
 [Life demo](https://pravosleva.pro/dist.hacker-news-2024/)
 
-## Requirements: UI/UX & Tech stack
+## Minimal Requirements (Infrastructure)
+- Node 20.17.0
+- npm 10.8.2 (or yarn 1.22.22)
+
+## Technical assignment: UI/UX & Tech stack
 - [x] React
 - [x] Redux
 - [x] React Router v6.x
@@ -12,7 +16,7 @@ This is client application for https://github.com/HackerNews/API
 - [x] 2 pages:
   - [x] Homepage
     - [x] Last 100 news
-    - [x] UI: Each news item has visual attrs:
+    - [x] Each news item has visual attrs:
       - [x] Title
       - [x] Rating
       - [x] Author nickname
@@ -21,7 +25,7 @@ This is client application for https://github.com/HackerNews/API
     - [x] Refresh list each 60 sec
     - [x] Button for update list
   - [x] News item page
-    - [x] UI: Visual news item attrs:
+    - [x] Visual news item attrs:
       - [x] Link to url
       - [x] Title
       - [x] Publish date
@@ -33,12 +37,13 @@ This is client application for https://github.com/HackerNews/API
       - [x] Button for refresh all comments
       - [x] Button for move to Homepage
 
-## Original features
+## Special features (not from the technical assignment)
 - [x] Worker thread for main request queue
   - [x] Shared Worker
   - [x] Dedicated Worker (if Shared Worker not supported)
   - [x] Configurable cache time (newstories list)
 - [x] Main thread for comments polling (could be moved to workers too)
+- [x] Something from Web API for better UX (scroll)
 
 ## FAQ
 > Q: Why Hash Router?
@@ -67,6 +72,9 @@ yarn build && yarn preview
 ```shell
 yarn dev
 ```
+
+## Bundle size analysis
+http://localhost/stats.html
 
 # React + TypeScript + Vite
 
