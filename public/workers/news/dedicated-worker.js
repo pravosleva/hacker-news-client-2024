@@ -166,8 +166,8 @@ var window = self;
                   case !output.ok:
                     // NOTE: Send error
                     sendError()
-                    // -- NOTE: (Exp) Отправим в любом случае
-                    sendData()
+                    // -- NOTE: (Exp) Отправим в любом случае?
+                    // sendData()
                     // --
                     break
                   default:

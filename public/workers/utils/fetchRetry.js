@@ -16,7 +16,11 @@ function fetchRetry({
       url,
   })
   function onError(err) {
-    console.error(err.message, __triesLeft)
+    const msgs = []
+    if (!!err && typeof err?.message === 'string' && !!err.message)
+      msgs.push(err.message)
+    
+    msgs.push(`Attempt ${tries - __triesLeft + 1} of ${tries}`)
     __triesLeft -= 1
     if (
       typeof cb?.onFinalError === 'function'
@@ -26,22 +30,23 @@ function fetchRetry({
         __triesLeft,
         tries,
         url,
-        message: err.message,
+        message: msgs.join(', '),
       }
       cb.onFinalError(r)
 
       return Promise.reject(r)
     }
-    if (__triesLeft <= 0) throw new Error(err.message)
+    if (__triesLeft <= 0)
+      throw new Error(msgs.join(', '))
 
     return wait(delay).then(() => fetchRetry({ url, delay, tries: __triesLeft, nativeFetchOptions }))
   }
   return fetch(url, nativeFetchOptions)
     .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
+      if (!response.ok)
+        throw new Error('Network response was not ok')
+
+      return response.json()
     })
     .catch(onError)
 }

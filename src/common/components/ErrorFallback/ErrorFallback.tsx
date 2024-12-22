@@ -2,8 +2,9 @@ import { Alert, Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 type TProps = {
-  resetErrorBoundary: () => void
-  error: Error
+  resetErrorBoundary: () => void;
+  error: Error;
+  customPossibleReason?: string;
 }
 
 const PREFIX = 'MyCard';
@@ -31,13 +32,14 @@ const CustomAlert = styled(Alert)(({ theme }) => ({
   },
 }))
 
-export const ErrorFallback = ({ error, resetErrorBoundary }: TProps) => {
+export const ErrorFallback = ({ error, resetErrorBoundary, customPossibleReason }: TProps) => {
   // const classes = useStyles()
   const { message } = error
 
   return (
     <CustomAlert variant="outlined" severity="error" title="Oops">
       <div className={classes.root}>
+        {!!customPossibleReason && <div>{customPossibleReason}</div>}
         <div>{message}</div>
         <Button size='small' autoFocus onClick={resetErrorBoundary} variant='outlined' color="primary">
           Try again

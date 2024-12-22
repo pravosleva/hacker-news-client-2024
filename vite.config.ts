@@ -4,6 +4,8 @@ import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import pkg from './package.json'
 
+const GIT_SHA1 = process.env.VITE_GIT_SHA1
+
 // NOTE: See also https://vite.dev/config/
 export default defineConfig({
   base: './',
@@ -13,7 +15,7 @@ export default defineConfig({
     // NOTE: Last one
     // See also https://www.npmjs.com/package/rollup-plugin-visualizer
     visualizer({
-      title: `Stats | HN client app v${pkg.version}`,
+      title: `Stats | HN client app v${pkg.version} | GIT SHA1 ${GIT_SHA1}`,
       template: 'sunburst', // sunburst, treemap, network
       emitFile: true,
       filename: 'stats.html',

@@ -76,7 +76,7 @@ yarn dev
 
 ## Bundle size analysis
 Will be built to `/dist/stats.html` [Like this](https://pravosleva.pro/dist.hacker-news-2024/stats.html)
-- [ ] Bundle could be optimized, as you can see
+- [ ] Bundle could be optimized, as you can see (may be in future?)
 
 # React + TypeScript + Vite
 

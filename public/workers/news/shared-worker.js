@@ -176,8 +176,8 @@ let port // TODO? var ports = new Map()
                   switch (true) {
                     case !output.ok:
                       sendError()
-                      // -- NOTE: (Exp) Отправим в любом случае
-                      sendData()
+                      // -- NOTE: (Exp) Отправим в любом случае?
+                      // sendData()
                       // --
                       break
                     default:

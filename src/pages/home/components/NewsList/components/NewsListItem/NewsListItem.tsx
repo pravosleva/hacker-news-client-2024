@@ -50,7 +50,15 @@ export const NewsListItem = memo(({ newsItemId }: TProps) => {
   }, [itemData, itemErrorInfo, newsItemId])
 
   return (
-    <ErrorBoundary fallbackRender={ErrorFallback}>
+    <ErrorBoundary
+      fallbackRender={({ error, resetErrorBoundary }) => (
+        <ErrorFallback
+          error={error}
+          resetErrorBoundary={resetErrorBoundary}
+          customPossibleReason='May be removed by moderator'
+        />
+      )}
+    >
       {MemozedNewsItem}
     </ErrorBoundary>
   )

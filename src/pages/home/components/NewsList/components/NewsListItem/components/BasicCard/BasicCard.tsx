@@ -1,4 +1,3 @@
-/* eslint-disable no-extra-boolean-cast */
 import { useLayoutEffect, useState } from 'react'
 import { Alert, Button, Card, CardContent, CardActions } from '@mui/material'
 import Typography from '@mui/material/Typography'
@@ -30,7 +29,7 @@ export const BasicCard = ({
 }: TProps) => {
   // -- NOTE: 2/3 Совершенно необязательный механизм,
   // просто интуитивный UX
-  // TODO: Перенести в отдельный контекст
+  // TODO: Можно перенести в отдельный контекст
   const [isActive, setIsActive] = useState(false)
   const [urlSearchParams] = useSearchParams()
   useLayoutEffect(() => {
