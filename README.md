@@ -28,16 +28,17 @@ This is client application for https://github.com/HackerNews/API
       - [x] Author nickname
       - [x] Comments counter
       - [x] Comments tree
-        - [x] root comments loaded atomatically
-        - [x] subcomments loaded by clck on root comment
+        - [x] Root comments loaded atomatically
+        - [x] Subcomments loaded by click on root comment
       - [x] Button for refresh all comments
       - [x] Button for move to Homepage
 
 ## Original features
-- [x] Workers for main request queue
+- [x] Worker thread for main request queue
   - [x] Shared Worker
   - [x] Dedicated Worker (if Shared Worker not supported)
   - [x] Configurable cache time (newstories list)
+- [x] Main thread for comments polling (could be moved to workers too)
 
 ## FAQ
 > Q: Why Hash Router?
