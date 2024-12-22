@@ -76,15 +76,15 @@ export const NewsItemPage = memo(() => {
             alignItems: 'center',
           }}
         >
-          <b>#{id || 'No id'}</b>
+          <b>#{id || '[No id]'}</b>
         </div>
 
       </div>
       <div
         className={clsx(baseClasses.stack3, classes.article)}
-        style={{
-          paddingTop: '30px',
-        }}
+        // style={{
+        //   paddingTop: '30px',
+        // }}
         id={String(itemData?.id || 'unknown-id')}
       >
         {
@@ -119,9 +119,12 @@ export const NewsItemPage = memo(() => {
         }
         {
           !!itemData?.text && (
-            <Typography variant='body1' component="p" className={baseClasses.preNormalized}>
-              {itemData.text}
-            </Typography>
+            <Typography
+              variant='body1'
+              component="p"
+              className={baseClasses.preNormalized}
+              dangerouslySetInnerHTML={{ __html: itemData.text }}
+            />
           )
         }
         {

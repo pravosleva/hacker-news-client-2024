@@ -13,7 +13,7 @@ export const Layout = memo(({ children }: TProps) => {
 
   return (
     <>
-      <div className={clsx(classes.layoutWrapper, baseClasses.stack2)}>
+      <div className={clsx(classes.layoutWrapper, baseClasses.stack0)}>
         {children}
         <footer className={classes.siteFooter}>{fullyear}</footer>
       </div>

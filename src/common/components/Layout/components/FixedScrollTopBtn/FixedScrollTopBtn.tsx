@@ -19,7 +19,7 @@ export const FixedScrollTopBtn = memo(() => {
     scrollTopExtra()
   }, [location])
   
-  // -- NOTE: 1/2 Совершенно необязательный механизм,
+  // -- NOTE: 1/3 Совершенно необязательный механизм,
   // просто удобный UX
   // TODO: Перенести в отдельный контекст
   const [urlSearchParams] = useSearchParams()

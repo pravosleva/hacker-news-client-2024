@@ -28,7 +28,7 @@ export const BasicCard = ({
   errorMessage,
   localLink,
 }: TProps) => {
-  // -- NOTE: 2/2 Совершенно необязательный механизм,
+  // -- NOTE: 2/3 Совершенно необязательный механизм,
   // просто интуитивный UX
   // TODO: Перенести в отдельный контекст
   const [isActive, setIsActive] = useState(false)
@@ -43,7 +43,6 @@ export const BasicCard = ({
     <Card
       id={String(id)}
       sx={{
-        // minWidth: 275,
         boxShadow: 'none',
         border: '2px solid lightgray',
         borderRadius: '16px',
@@ -56,12 +55,7 @@ export const BasicCard = ({
         },
       )}
     >
-      <CardContent
-        sx={{
-          padding: '8px',
-          // border: '1px solid red',
-        }}
-      >
+      <CardContent sx={{ padding: '8px' }}>
         <div
           style={{
             display: 'flex',

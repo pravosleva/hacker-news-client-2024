@@ -10,7 +10,7 @@ import { TStore } from '~/common/store'
 import { memo, useCallback, useMemo, useState } from 'react'
 import { setNewsItemData, setNewsItemError } from '~/common/store/reducers'
 import baseClasses from '~/App.module.scss'
-import { Alert, Box, Button, Skeleton } from '@mui/material'
+import { Alert, Box, Button, IconButton, Skeleton } from '@mui/material'
 import { getNormalizedDateTime } from '~/common/utils/time-ops'
 import { compareDESC } from '~/common/utils/number-ops'
 import { useParams } from 'react-router-dom'
@@ -62,7 +62,7 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
             break
           default:
             targetElm.scrollIntoView({ behavior: 'smooth', block: 'center' })
-            scrollToElm(targetElm)
+            // scrollToElm(targetElm)
             break
         }
       } else {
@@ -91,27 +91,33 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
                       display: 'flex',
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
+                      alignItems: 'flex-start',
+                      // flexWrap: 'wrap',
                       gap: '16px',
                     }}
                   >
-                    <b>#{itemData?.id}</b>
+                    <div
+                      style={{
+                        display: 'flex',
+                        gap: '8px',
+                        flexWrap: 'wrap',
+                      }}
+                    >
+                      <b>#{itemData?.id || '[No id]'}</b>
+                      {!!itemData?.by && <span>by <b>{itemData?.by}</b></span>}
+                    </div>
+                    
                     {!!itemData?.parent && (
-                      <Button
-                        variant='text'
-                        endIcon={<ArrowUpwardIcon />}
-                        size='small'
+                      <IconButton
                         onClick={handleScrollToParent(itemData.parent)}
+                        size='small'
                       >
-                        To Parent
-                      </Button>
+                        <ArrowUpwardIcon fontSize='small' />
+                      </IconButton>
                     )}
                   </div>
                 )
               }
-
-              {!!itemData?.by && <span>by <b>{itemData?.by}</b></span>}
 
               {
                 itemData?.deleted && (
@@ -144,8 +150,8 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
               }
               {
                 !!itemData?.text && (
-                  // <div dangerouslySetInnerHTML={{ __html: itemData.text }} />
-                  <div>{itemData.text}</div>
+                  <div dangerouslySetInnerHTML={{ __html: itemData.text }} />
+                  // <div>{itemData.text}</div>
                 )
               }
               {!!itemData?.time && <Box sx={{ color: 'text.secondary', fontSize: 'small', textAlign: 'right' }}>{getNormalizedDateTime(itemData?.time)}</Box>}

@@ -1,11 +1,9 @@
 import { memo, useMemo } from 'react'
-// import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { TStore } from '~/common/store'
 import { TNewsItemDetails } from '~/common/store/reducers/newsSlice'
 import { ErrorFallback } from '~/common/components'
 import { ErrorBoundary } from 'react-error-boundary'
-// import { getNormalizedDateTime } from '~/common/utils/time-ops'
 import { BasicCard } from './components'
 import { Alert, Skeleton } from '@mui/material'
 
@@ -15,10 +13,10 @@ type TProps = {
 
 export const NewsListItem = memo(({ newsItemId }: TProps) => {
   const details = useSelector((s: TStore) => s.news.details)
-  const itemData = useMemo<TNewsItemDetails | undefined>(() => details[String(newsItemId)], [details[String(newsItemId)]])
+  const itemData = useMemo<TNewsItemDetails | undefined>(() => details[String(newsItemId)], [details, newsItemId])
 
   const errors = useSelector((s: TStore) => s.news.errors)
-  const itemErrorInfo = useMemo<string | undefined>(() => errors[String(newsItemId)], [errors[String(newsItemId)]])
+  const itemErrorInfo = useMemo<string | undefined>(() => errors[String(newsItemId)], [errors, newsItemId])
 
   const MemozedNewsItem = useMemo(() => {
     switch (true) {
@@ -52,12 +50,7 @@ export const NewsListItem = memo(({ newsItemId }: TProps) => {
   }, [itemData, itemErrorInfo, newsItemId])
 
   return (
-    <ErrorBoundary
-      fallbackRender={ErrorFallback}
-      // onReset={(details) => {
-      //   // NOTE: Reset the state of your app so the error doesn't happen again
-      // }}
-    >
+    <ErrorBoundary fallbackRender={ErrorFallback}>
       {MemozedNewsItem}
     </ErrorBoundary>
   )

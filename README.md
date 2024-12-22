@@ -1,12 +1,37 @@
 # Hacker News Client
 
-[Demo](https://pravosleva.pro/dist.hacker-news-2024/)
+This is client application for https://github.com/HackerNews/API
 
-## Requirements of tech stack
+[Life demo](https://pravosleva.pro/dist.hacker-news-2024/)
+
+## Requirements: UI/UX & Tech stack
 - [x] React
 - [x] Redux
 - [x] React Router v6.x
 - [x] Material UI
+- [x] 2 pages:
+  - [x] Homepage
+    - [x] Last 100 news
+    - [x] UI: Each news item has visual attrs:
+      - [x] Title
+      - [x] Rating
+      - [x] Author nickname
+      - [x] Publish date
+    - [x] Button for move to `/news/:id`
+    - [x] Refresh list each 60 sec
+    - [x] Button for update list
+  - [x] News item page
+    - [x] UI: Visual news item attrs:
+      - [x] Link to url
+      - [x] Title
+      - [x] Publish date
+      - [x] Author nickname
+      - [x] Comments counter
+      - [x] Comments tree
+        - [x] root comments loaded atomatically
+        - [x] subcomments loaded by clck on root comment
+      - [x] Button for refresh all comments
+      - [x] Button for move to Homepage
 
 ## Original features
 - [x] Workers for main request queue
@@ -15,17 +40,17 @@
   - [x] Configurable cache time (newstories list)
 
 ## FAQ
-Q: Why Hash Router?
-A: hash router for easy external NGINX setttings - could be changed to browser router
+> Q: Why Hash Router?
+> A: hash router for easy external NGINX setttings - could be changed to browser router
 
-Q: Why Wokers used?
-A: For better browser performance
+> Q: Why Wokers used?
+> A: For better browser performance
 
-Q: Why Vite not latest?
-A: Cuz its unstable yet =)
+> Q: Why Vite not latest?
+> A: Cuz its unstable yet =)
 
-Q: Why so much request in browser?
-A: Polling used for refresh each comment per 60 sec - I think, it's logical (could be turned off if necessary)
+> Q: Why so much request in browser?
+> A: Polling used for refresh each comment per 60 sec - I think, it's logical (could be turned off if necessary)
 
 ### Install deps
 ```shell
