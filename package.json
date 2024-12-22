@@ -4,10 +4,10 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3001",
+    "dev": "vite --port 3001 --open",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite --port 3000 preview",
+    "preview": "vite --port 3000 --open preview",
     "build:prod": "tsc && VITE_APP_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') VITE_GIT_SHA1=$(git show --format=\"%h\" --no-patch) vite build --mode production --emptyOutDir",
     "_deploy2:staging": "yarn build:prod && bash _aux-tool.deploy2.prod.sh"
   },

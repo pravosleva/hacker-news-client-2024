@@ -10,11 +10,11 @@ import { TStore } from '~/common/store'
 import { memo, useCallback, useMemo, useState } from 'react'
 import { setNewsItemData, setNewsItemError } from '~/common/store/reducers'
 import baseClasses from '~/App.module.scss'
-import { Alert, Box, Button, IconButton, Skeleton } from '@mui/material'
+import { Alert, Box, IconButton, Skeleton } from '@mui/material'
 import { getNormalizedDateTime } from '~/common/utils/time-ops'
 import { compareDESC } from '~/common/utils/number-ops'
 import { useParams } from 'react-router-dom'
-import { scrollTop, scrollToElm } from '~/common/components/Layout/utils'
+import { scrollTop } from '~/common/components/Layout/utils'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 
 type TProps = {
