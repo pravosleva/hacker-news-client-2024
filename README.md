@@ -58,6 +58,7 @@ This is client application for https://github.com/HackerNews/API
 > Q: Why so much request in browser?
 > A: Polling used for refresh each comment per 60 sec - I think, it's logical (could be turned off if necessary)
 
+## Instructions
 ### Install deps
 ```shell
 yarn
@@ -74,7 +75,8 @@ yarn dev
 ```
 
 ## Bundle size analysis
-http://localhost/stats.html
+Will be built to `/dist/stats.html` [Like this](https://pravosleva.pro/dist.hacker-news-2024/stats.html)
+- [ ] Bundle could be optimized, as you can see
 
 # React + TypeScript + Vite
 
