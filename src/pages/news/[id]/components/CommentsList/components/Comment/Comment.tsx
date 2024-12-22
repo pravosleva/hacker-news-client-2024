@@ -140,13 +140,12 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
               }
               
               {
-                !!itemData?.url && (
-                  <a href={itemData.url} target='_blank'>{itemData.url}</a>
-                )
+                !!itemData?.url && <a href={itemData.url} target='_blank'>{itemData.url}</a>
               }
               {
                 !!itemData?.text && (
-                  <div dangerouslySetInnerHTML={{ __html: itemData?.text }} />
+                  // <div dangerouslySetInnerHTML={{ __html: itemData.text }} />
+                  <div>{itemData.text}</div>
                 )
               }
               {!!itemData?.time && <Box sx={{ color: 'text.secondary', fontSize: 'small', textAlign: 'right' }}>{getNormalizedDateTime(itemData?.time)}</Box>}

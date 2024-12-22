@@ -6,6 +6,7 @@
 - [x] React
 - [x] Redux
 - [x] React Router v6.x
+- [x] Material UI
 
 ## Original features
 - [x] Workers for main request queue
