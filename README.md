@@ -66,7 +66,7 @@ yarn
 
 ### Preview mode on http://localhost:3000
 ```shell
-yarn build && yarn preview
+yarn build:prod && yarn preview
 ```
 
 ### Development mode on http://localhost:3001
