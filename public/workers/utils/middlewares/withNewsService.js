@@ -20,6 +20,9 @@ const getNewsItemFromCache = ({ nNewsItemId, tsLimit = 1 * 1000 }) => {
   return res
 }
 
+const controllers = {}
+let currectControllerKey = '0'
+
 const withNewsService = async ({
   eventData,
   cb,
@@ -48,20 +51,41 @@ const withNewsService = async ({
       // -- NOTE: Level 2: Different app event types
       switch (eventData?.input.opsEventType) {
         case NES.Common.ClientService.News.EClientToWorkerEvent.GET_NEWS: {
-          // console.log(eventData?.input)
-          
+          if (typeof eventData?.input.dataPackKey === 'number')
+            currectControllerKey = String(eventData?.input.dataPackKey)
+
+          // --- NOTE: For example
           // await delay(3000)
           // output = {
           //   ok: true,
           //   message: 'Test async op (TODO: GET_PERSONS_DATA)',
           //   data: <ORIGINAL_RESPONSE>,
           // }
+          // ---
 
           const { newsIds, baseApiUrl } = eventData?.input
           let _c = 0
           const _total = newsIds.length
 
+          if (typeof eventData?.input?.dataPackKey === 'number') {
+            switch (true) {
+              case !controllers[String(eventData?.input?.dataPackKey)]:
+                // NOTE: Cleanup old controllers and start new
+                for (const key in controllers) {
+                  controllers[key].abort()
+                  delete controllers[key]
+                }
+                
+                controllers[String(eventData?.input?.dataPackKey)] = new AbortController()
+                break
+              default:
+                // NOTE: Go on...
+                break
+            }
+          }
+
           for (const id of newsIds) {
+            if (String(eventData?.input?.dataPackKey) !== currectControllerKey) break
             const newsItemFromCahce = getNewsItemFromCache({ nNewsItemId: id })
             if (newsItemFromCahce.ok && newsItemFromCahce.data) {
               output = newsItemFromCahce.data
@@ -75,6 +99,7 @@ const withNewsService = async ({
                   // headers: { 'Content-Type': 'application/json' },
                   // body: JSON.stringify({ nNewsItemId: id }),
                   // signal: abortController.signal,
+                  signal: controllers[String(eventData?.input?.dataPackKey)].signal
                 },
                 cb: {
                   onEachAttempt: ({ __triesLeft, tries, url }) => {
@@ -225,12 +250,14 @@ const withNewsService = async ({
                   originalResponse: output.data,
                   ...output,
                 },
+                input,
                 _service,
               })
             }
 
             // await delay(100)
           }
+          signals[String(eventData?.input?.dataPackKey)].ab
           break
         }
         default: break

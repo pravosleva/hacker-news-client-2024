@@ -138,7 +138,7 @@ let port // TODO? var ports = new Map()
             withRootMW({
               eventData: e.data,
               cb: {
-                [NES.Common.ClientService.News.EClientToWorkerEvent.GET_NEWS]: ({ output, _service }) => {
+                [NES.Common.ClientService.News.EClientToWorkerEvent.GET_NEWS]: ({ output, input, _service }) => {
                   // console.log('SharedWorker -> withRootMW -> cb', NES.Common.ClientService.News.EClientToWorkerEvent.GET_NEWS)
                   _perfInfo.tsList.push({
                     descr: `c->sw:listener:opsEventType->[cb]->client: ${input.opsEventType}`,
@@ -153,6 +153,7 @@ let port // TODO? var ports = new Map()
                       __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_ERRORED,
                       data: {
                         output,
+                        input,
                         _service: {
                           tsList: _perfInfo.tsList,
                           ..._service,
@@ -165,6 +166,7 @@ let port // TODO? var ports = new Map()
                       __eType: NES.Common.ClientService.News.EWorkerToClientEvent.ITEM_RECEIVED,
                       data: {
                         output,
+                        input,
                         _service: {
                           tsList: _perfInfo.tsList,
                           ..._service,
@@ -176,12 +178,8 @@ let port // TODO? var ports = new Map()
                   switch (true) {
                     case !output.ok:
                       sendError()
-                      // -- NOTE: (Exp) Отправим в любом случае?
-                      // sendData()
-                      // --
                       break
                     default:
-                      // NOTE: Success
                       sendData()
                       break
                   }

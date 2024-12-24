@@ -1,7 +1,7 @@
 import axios, { CancelTokenSource } from 'axios'
 import { API, TAPIProps } from './API'
 import { NResponse } from './types'
-import { TNewsItemDetails } from '~/common/store/reducers/newsSlice/types'
+import { ENewsMode, TNewsItemDetails } from '~/common/store/reducers/newsSlice/types'
 
 const VITE_BASE_API_URL = import.meta.env.VITE_BASE_API_URL
 
@@ -20,12 +20,14 @@ class Singleton extends API {
     return Singleton.instance
   }
 
-  async getNews(): Promise<{ ok: boolean; message?: string; targetResponse: number[] }> {
+  async getNews({ newsMode }: {
+    newsMode: ENewsMode;
+  }): Promise<{ ok: boolean; message?: string; targetResponse: number[] }> {
     this.getNewsTokenSource.cancel('axios request canceled')
     this.getNewsTokenSource = axios.CancelToken.source()
 
     const data = await this.api<number[]>({
-      url: '/newstories.json?print=pretty',
+      url: `/${newsMode}.json?print=pretty`,
       method: 'GET',
       cancelToken: this.getNewsTokenSource.token,
     })

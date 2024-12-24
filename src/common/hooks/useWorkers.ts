@@ -9,6 +9,7 @@ type TProps = {
   isDebugEnabled?: boolean;
   deps: {
     newsIds: number[];
+    mainPollingKey: number;
   };
   cb?: {
     beforeStart?: () => void;
@@ -28,6 +29,12 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
       data: {
         type: NWService.EWorkerToClientEvent;
         output: NWService.TNewsItemDataResult<TNewsItemDetails>;
+        // NOTE: Input data could be compared
+        input: {
+          opsEventType: NWService.EClientToWorkerEvent;
+          newsIds: number[];
+          dataPackKey: number;
+        };
         _service: {
           id: number;
           counters: {
@@ -39,34 +46,44 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
     }>({
       wName: 'newsWorker',
       cb: (e) => {
-        switch (e.data.__eType) {
-          case NWService.EWorkerToClientEvent.NEWS_ITEM_RECEIVED:
+        switch (true) {
+          case wws.activeIncomingChannels.newsWorker !== e.data.data.input.dataPackKey:
             if (isDebugEnabled) groupLog({
-              namespace: `useWorkers: by newsWorker (on data #1) [${e.data.__eType}]`,
-              items: [
-                'e.data.data.output',
-                e.data.data.output,
-                `typeof cb?.onEachNewsItemData -> ${typeof cb?.onEachNewsItemData}`,
-              ],
+              namespace: `useWorkers: Ignore dataPackKey: ${e.data.data.input.dataPackKey}, current: ${wws.activeIncomingChannels.newsWorker} [${e.data.__eType}]`,
+              items: ['e.data.data.input', e.data.data.input, 'e.data.data.output', e.data.data.output],
             })
-            if (
-              typeof cb?.onEachNewsItemData === 'function'
-              && !!e.data.data.output.originalResponse
-            ) cb?.onEachNewsItemData(e.data.data.output)
-            break
-          case NWService.EWorkerToClientEvent.NEWS_ITEM_ERRORED:
-            if (
-              typeof cb?.onFinalError === 'function'
-              && !!e.data.data.output.originalResponse
-            ) cb?.onFinalError({ id: e.data.data._service.id, reason: e.data.data.output.message || 'No output.message' })
-            break
-          default: {
-            if (isDebugEnabled) groupLog({
-              namespace: `useWorkers: by newsWorker ⚠️ (on data) UNHANDLED! [${e.data.__eType}]`,
-              items: ['e.data', e.data],
-            })
-            break
-          }
+            return
+          default:        
+            switch (e.data.__eType) {
+              case NWService.EWorkerToClientEvent.NEWS_ITEM_RECEIVED:
+                if (isDebugEnabled) groupLog({
+                  namespace: `useWorkers: by newsWorker (on data #1) [${e.data.__eType}]`,
+                  items: [
+                    'e.data.data.output',
+                    e.data.data.output,
+                    `typeof cb?.onEachNewsItemData -> ${typeof cb?.onEachNewsItemData}`,
+                  ],
+                })
+                if (
+                  typeof cb?.onEachNewsItemData === 'function'
+                  && !!e.data.data.output.originalResponse
+                ) cb?.onEachNewsItemData(e.data.data.output)
+                break
+              case NWService.EWorkerToClientEvent.NEWS_ITEM_ERRORED:
+                if (
+                  typeof cb?.onFinalError === 'function'
+                  && !!e.data.data.output.originalResponse
+                ) cb?.onFinalError({ id: e.data.data._service.id, reason: e.data.data.output.message || 'No output.message' })
+                break
+              default: {
+                if (isDebugEnabled) groupLog({
+                  namespace: `useWorkers: by newsWorker ⚠️ (on data) UNHANDLED! [${e.data.__eType}]`,
+                  items: ['e.data', e.data],
+                })
+                break
+              }
+            }
+          break
         }
       },
     })
@@ -109,12 +126,13 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
     //     })
     //   }
     // }
-  }, [isDebugEnabled, deps.newsIds])
+  }, [isDebugEnabled, deps.newsIds, cb, deps.mainPollingKey])
 
   const sendSignalToNewsWorker = useCallback(({ input }: {
     input: {
       opsEventType: NWService.EClientToWorkerEvent;
       newsIds: number[];
+      dataPackKey: number;
     }
   }) => {
     wws.post<{
@@ -124,6 +142,7 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
 
         opsEventType: string;
         newsIds: number[];
+        dataPackKey: number;
       }
     }>({
       wName: 'newsWorker',
@@ -131,7 +150,7 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
       data: {
         input: {
           baseApiUrl: BASE_API_URL,
-          appVersion: 'wip',
+          appVersion: '[wip]',
           ...input,
         },
       },
@@ -144,7 +163,8 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
       input: {
         opsEventType: NWService.EClientToWorkerEvent.GET_NEWS,
         newsIds: deps.newsIds,
+        dataPackKey: deps.mainPollingKey,
       }
     })
-  }, [isDebugEnabled, sendSignalToNewsWorker, deps.newsIds])
+  }, [isDebugEnabled, sendSignalToNewsWorker, deps.newsIds, deps.mainPollingKey])
 }

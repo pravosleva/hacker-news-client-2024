@@ -14,11 +14,7 @@ export const NewsList = memo(() => {
   return (
     <div className={baseClasses.stack2}>
       {
-        items?.map((id) => {
-          return (
-            <NewsListItem key={id} newsItemId={id} />
-          )
-        })
+        items?.map((id) => <NewsListItem key={String(id)} newsItemId={id} />)
       }
     </div>
   )

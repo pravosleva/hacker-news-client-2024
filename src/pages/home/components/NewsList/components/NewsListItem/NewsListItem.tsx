@@ -23,23 +23,22 @@ export const NewsListItem = memo(({ newsItemId }: TProps) => {
       case !!itemData:
         return (
           <BasicCard
-            id={itemData.id}
-            title={itemData.title}
-            rating={itemData.score}
-            publishUnixTime={itemData.time}
-            author={itemData.by}
+            id={itemData?.id}
+            title={itemData?.title}
+            rating={itemData?.score}
+            publishUnixTime={itemData?.time}
+            author={itemData?.by}
             errorMessage={itemErrorInfo}
             localLink={`/news/${itemData.id}`}
           />
         )
-      case !!itemErrorInfo:
+      case !!itemData?.id && !!itemErrorInfo:
         return (
           <Alert
-            title={`#${newsItemId} ERRORED`}
             variant='filled'
             severity='error'
           >
-            {itemErrorInfo}
+            {`#${newsItemId} ERRORED:`} {itemErrorInfo}
           </Alert>
         )
       default:

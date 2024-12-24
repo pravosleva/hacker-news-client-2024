@@ -128,7 +128,7 @@ var window = self;
           withRootMW({
             eventData: e.data,
             cb: {
-              [NES.Common.ClientService.News.EClientToWorkerEvent.GET_NEWS]: ({ output, _service }) => {
+              [NES.Common.ClientService.News.EClientToWorkerEvent.GET_NEWS]: ({ output, input, _service }) => {
                 _perfInfo.tsList.push({
                   descr: `c->w:listener:opsEventType->[cb]->client: ${input.opsEventType}`,
                   p: performance.now(),
@@ -146,6 +146,7 @@ var window = self;
                         ..._service,
                       },
                       output,
+                      input,
                     },
                   })
                 }
@@ -158,20 +159,16 @@ var window = self;
                         ..._service,
                       },
                       output,
+                      input,
                     },
                   })
                 }
                 
                 switch (true) {
                   case !output.ok:
-                    // NOTE: Send error
                     sendError()
-                    // -- NOTE: (Exp) Отправим в любом случае?
-                    // sendData()
-                    // --
                     break
                   default:
-                    // NOTE: Success
                     sendData()
                     break
                 }

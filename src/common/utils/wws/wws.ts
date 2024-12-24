@@ -31,13 +31,18 @@ class Singleton {
   private noSharedWorkers: boolean | undefined;
   private isDebugEnabled: boolean | undefined;
   // private workersForReInitOnEachPostFromClient: string[];
+  public activeIncomingChannels: {
+    [key: string]: number;
+  };
 
   private constructor({ noSharedWorkers, isDebugEnabled }: TProps) {
     this.noSharedWorkers = noSharedWorkers
     this.isDebugEnabled = isDebugEnabled
     this.workers = {}
+    this.activeIncomingChannels = {}
 
     this.initWorker({ wName: 'newsWorker' })
+    this.activeIncomingChannels.newsWorker = 0
     // NOTE: Other workers could be loaded and used...
 
     // NOTE: Некоторые воркеры, занятые в текущий момент проще ликвидировать и создать заново
@@ -45,6 +50,13 @@ class Singleton {
     // this.workersForReInitOnEachPostFromClient = [
     //   'newsWorker'
     // ]
+  }
+  public setActiveIncomingChannels({ wName, value }: {
+    wName: string;
+    value: number;
+  }): Promise<{ ok: boolean; message?: string; }> {
+    this.activeIncomingChannels[wName] = value
+    return Promise.resolve({ ok: true })
   }
   private initWorker({ wName }: {
     wName: string;
@@ -122,10 +134,10 @@ class Singleton {
 
     switch (true) {
       case this.workers[wName] instanceof Worker:
-        this.workers[wName].onmessage = cb
+        this.workers[wName].onmessage = cb.bind(this)
         break
       case typeof SharedWorker !== 'undefined' && this.workers[wName] instanceof SharedWorker:
-        this.workers[wName].port.onmessage = cb
+        this.workers[wName].port.onmessage = cb.bind(this)
         break
       default:
         break
@@ -143,11 +155,11 @@ class Singleton {
 
     switch (true) {
       case this.workers[wName] instanceof Worker:
-        this.workers[wName].onmessageerror = cb
+        this.workers[wName].onmessageerror = cb.bind(this)
         break
       case typeof SharedWorker !== 'undefined' && this.workers[wName] instanceof SharedWorker:
         // _c++
-        this.workers[wName].port.onmessageerror = cb
+        this.workers[wName].port.onmessageerror = cb.bind(this)
         break
       default:
         break
@@ -218,3 +230,5 @@ export const wws = Singleton.getInstance({
   noSharedWorkers: false,
   isDebugEnabled: false,
 })
+
+// export type WWSSingleton = Singleton['activeIncomingChannels']

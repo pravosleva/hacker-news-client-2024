@@ -215,10 +215,9 @@ export const NewsItemPage = memo(() => {
             <Button
               variant='outlined'
               onClick={handleClickUpdateComments}
-              startIcon={<RefreshIcon />}
               size='small'
             >
-              Update
+              <RefreshIcon />
             </Button>
           )
         }
