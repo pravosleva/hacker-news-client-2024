@@ -56,7 +56,7 @@ const newsSlice = createSlice({
         // state.items = action.payload.result.targetResponse
 
         // NOTE: (v2) По ТЗ требуется оставить последние 100, предварительно отсортировав
-        const uiLimit = 100
+        const uiLimit = 1000
         const sortedIds = action.payload.result.targetResponse.sort(compareDESC)
         const someLast = []
         for (let i = 0, max = uiLimit; i < max; i++) {
