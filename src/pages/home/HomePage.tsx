@@ -32,6 +32,10 @@ export const HomePage = memo(() => {
   // const details = useSelector((s: TStore) => s.news.details)
   const targetItemsCounters = useSelector((s: TStore) => s.news.targetItemsCounters)
   const loadedTagetCounter = useMemo(() => targetItemsCounters[newsMode], [targetItemsCounters, newsMode])
+  const infoText = useMemo(() => loadedTagetCounter > items.length
+    ? `+${loadedTagetCounter - items.length}`
+    : `${loadedTagetCounter} of ${items.length}`,
+    [loadedTagetCounter, items.length])
 
   return (
     <Layout>
@@ -45,7 +49,7 @@ export const HomePage = memo(() => {
           alignItems: 'center',
         }}
       >
-        <b>{BRAND_NAME}{items.length > 0 ? ` [${loadedTagetCounter} of ${items.length}]` : ''}</b>
+        <b>{BRAND_NAME}{items.length > 0 ? ` [${infoText}]` : ''}</b>
         <div
           style={{
             display: 'flex',
