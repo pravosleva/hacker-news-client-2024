@@ -56,7 +56,7 @@ const newsSlice = createSlice({
         // state.items = action.payload.result.targetResponse
 
         // NOTE: (v2) По ТЗ требуется оставить последние 100, предварительно отсортировав
-        const uiLimit = 1000
+        const uiLimit = 100
         const sortedIds = action.payload.result.targetResponse.sort(compareDESC)
         const someLast = []
         for (let i = 0, max = uiLimit; i < max; i++) {
@@ -69,7 +69,7 @@ const newsSlice = createSlice({
     resetMainRequestResult: (state) => {
       state.mainRequestResult = undefined
       // NOTE: Reset target counter
-      state.targetItemsCounters[state.newsMode] = 0
+      // state.targetItemsCounters[state.newsMode] = 0
     },
     refreshPolling: (state) => {
       for (const key in state.details) delete state.details[key]

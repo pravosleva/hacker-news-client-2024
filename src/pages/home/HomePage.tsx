@@ -71,7 +71,7 @@ export const HomePage = memo(() => {
             <ErrorFallback
               error={error}
               resetErrorBoundary={resetErrorBoundary}
-              customPossibleReason='Unknown ERR'
+              customPossibleReason='Common list Error'
             />
           )}
         >

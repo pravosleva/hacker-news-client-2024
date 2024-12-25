@@ -9,7 +9,7 @@ export const NewsList = memo(() => {
   const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
 
   if (mainResponseResult?.ok === false)
-    throw new Error(mainResponseResult.message || 'Что-то пошло не так, но клиент будет в курсе, что именно...')
+    throw new Error(mainResponseResult.message || 'Что-то пошло не так, но клиент будет в курсе, что именно, т.к. внешняя обертка покажет ошибку')
   
   return (
     <div className={baseClasses.stack2}>
