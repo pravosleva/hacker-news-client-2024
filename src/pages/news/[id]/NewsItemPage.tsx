@@ -23,7 +23,7 @@ import clsx from 'clsx'
 import layoutClasses from '~/common/components/Layout/Layout.module.scss'
 // import SaveIcon from '@mui/icons-material/Save'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+// import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 
 export const NewsItemPage = memo(() => {
@@ -255,7 +255,7 @@ export const NewsItemPage = memo(() => {
             </Button>
           ) : (
             <Button
-              variant='outlined'
+              variant='contained'
               startIcon={<BookmarkAddIcon />}
               size='small'
               onClick={addToFavorites({ id: Number(id) })}

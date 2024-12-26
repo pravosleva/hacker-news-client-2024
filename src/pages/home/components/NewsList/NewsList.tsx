@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { TStore } from '~/common/store'
 import baseClasses from '~/App.module.scss'
 import { NewsListItem } from './components'
-// import { Chip } from '@mui/material'
+import { Alert } from '@mui/material'
 
 export const NewsList = memo(() => {
   const items = useSelector((s: TStore) => s.news.items)
@@ -31,7 +31,16 @@ export const NewsList = memo(() => {
         mainResponseResult?.ok === false && !!mainResponseResult.message && ErrorChip
       */}
       {
-        items?.map((id, i) => <NewsListItem key={String(id)} newsItemId={id} isNew={newSinceLastUpdateCounter > 0 ? newSinceLastUpdateCounter > i : false} />)
+        items.length > 0
+        ? items?.map((id, i) => <NewsListItem key={String(id)} newsItemId={id} isNew={newSinceLastUpdateCounter > 0 ? newSinceLastUpdateCounter > i : false} />)
+        : (
+          <Alert
+            variant='outlined'
+            severity='info'
+          >
+            No items yet
+          </Alert>
+        )
       }
     </div>
   )
