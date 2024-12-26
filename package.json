@@ -1,7 +1,7 @@
 {
   "name": "hacker-news-client-2024",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "engines": {
     "npm": ">=10.8.2",
@@ -9,7 +9,7 @@
     "yarn": ">=1.22.22"
   },
   "scripts": {
-    "dev": "vite --port 3001 --open",
+    "dev": "VITE_APP_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') VITE_GIT_SHA1=$(git show --format=\"%h\" --no-patch) vite --port 3001 --open",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite --port 3000 --open preview",

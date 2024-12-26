@@ -47,6 +47,10 @@
     // border: 2px dashed lightgray;
     border-top: 2px solid lightgray;
     padding: 16px 0px 16px 0px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   @media(max-width: 600px) {
