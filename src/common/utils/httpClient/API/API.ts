@@ -36,9 +36,9 @@ export class API {
       backoffType: 'exponential',
       // NOTE: Retry 5 times on requests that return a response (500, etc) before giving up. Defaults to 3.
       retry: 3,
-      retryDelay: 500,
+      retryDelay: 1000,
       // NOTE: Retry twice on errors that don't return a response (ENOTFOUND, ETIMEDOUT, etc).
-      noResponseRetries: 5,
+      noResponseRetries: 2,
       httpMethodsToRetry: ['GET', 'OPTIONS', 'POST'],
       // NOTE: You can detect when a retry is happening, and figure out how many
       // retry attempts have been made

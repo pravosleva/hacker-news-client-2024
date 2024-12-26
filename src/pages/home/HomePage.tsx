@@ -1,10 +1,10 @@
-import Button from '@mui/material/Button'
+import { Button, Chip } from '@mui/material'
 import { memo, useCallback, useMemo } from 'react'
 import { NewsList } from './components'
 import { ErrorFallback } from '~/common/components'
 import { ErrorBoundary } from 'react-error-boundary'
 import { useDispatch, useSelector } from 'react-redux'
-import { refreshPolling, resetMainRequestResult, ENewsMode, setNewsMode, uiDict } from '~/common/store/reducers'
+import { refreshPolling, ENewsMode, setNewsMode, uiDict } from '~/common/store/reducers'
 import baseClasses from '~/App.module.scss'
 import layoutStyles from '~/common/components/Layout/Layout.module.scss'
 import RefreshIcon from '@mui/icons-material/Refresh'
@@ -30,10 +30,10 @@ export const HomePage = memo(() => {
 
   const items = useSelector((s: TStore) => s.news.items)
   // const details = useSelector((s: TStore) => s.news.details)
-  const targetItemsCounters = useSelector((s: TStore) => s.news.targetItemsCounters)
-  const loadedTagetCounter = useMemo(() => targetItemsCounters[newsMode], [targetItemsCounters, newsMode])
+  const loadedCounters = useSelector((s: TStore) => s.news.loadedItemsCounters)
+  const loadedTagetCounter = useMemo(() => loadedCounters[newsMode], [loadedCounters, newsMode])
   const infoText = useMemo(() => loadedTagetCounter > items.length
-    ? `+${loadedTagetCounter - items.length}`
+    ? `+${loadedTagetCounter - items.length} since last update`
     : `${loadedTagetCounter} of ${items.length}`,
     [loadedTagetCounter, items.length])
 
@@ -49,7 +49,10 @@ export const HomePage = memo(() => {
           alignItems: 'center',
         }}
       >
-        <b>{BRAND_NAME}{items.length > 0 ? ` [${infoText}]` : ''}</b>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <b>{BRAND_NAME}</b>
+          {items.length > 0 && <Chip label={infoText} size='small' />}
+        </div>
         <div
           style={{
             display: 'flex',
@@ -70,7 +73,7 @@ export const HomePage = memo(() => {
       </div>
       <div className={baseClasses.stack1}>
         <ErrorBoundary
-          onReset={() => dispatch(resetMainRequestResult())}
+          onReset={() => dispatch(refreshPolling())}
           fallbackRender={({ error, resetErrorBoundary }) => (
             <ErrorFallback
               error={error}

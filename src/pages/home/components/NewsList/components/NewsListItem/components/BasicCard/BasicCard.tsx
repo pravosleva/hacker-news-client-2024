@@ -7,6 +7,7 @@ import { getNormalizedDateTime } from '~/common/utils/time-ops'
 import { useSearchParams } from 'react-router-dom'
 import clsx from 'clsx'
 import classes from './BasicCard.module.scss'
+import NewReleasesIcon from '@mui/icons-material/NewReleases'
 
 type TProps = {
   id: number;
@@ -16,6 +17,7 @@ type TProps = {
   author: string;
   errorMessage?: string;
   localLink: string;
+  isNew?: boolean;
 }
 
 export const BasicCard = ({
@@ -26,16 +28,17 @@ export const BasicCard = ({
   author,
   errorMessage,
   localLink,
+  isNew,
 }: TProps) => {
   // -- NOTE: 2/3 Совершенно необязательный механизм,
   // просто интуитивный UX
   // TODO: Можно перенести в отдельный контекст
-  const [isActive, setIsActive] = useState(false)
+  const [isLastSeen, setIsLastSeen] = useState(false)
   const [urlSearchParams] = useSearchParams()
   useLayoutEffect(() => {
     const idToScroll = urlSearchParams.get('lastSeen')
-    setIsActive(idToScroll === String(id))
-  }, [urlSearchParams, id, setIsActive])
+    setIsLastSeen(idToScroll === String(id))
+  }, [urlSearchParams, id, setIsLastSeen])
   // --
   
   return (
@@ -46,14 +49,18 @@ export const BasicCard = ({
         border: '2px solid lightgray',
         borderRadius: '16px',
         padding: '8px',
+        position: 'relative',
       }}
       className={clsx(
         classes.transition,
         {
-          [classes.isActive]: isActive,
+          [classes.isRotated]: isLastSeen,
         },
       )}
     >
+      {/*isNew && (
+        <div className={classes.absoluteLabel}>NEW</div>
+      )*/}
       <CardContent sx={{ padding: '8px' }}>
         <div
           style={{
@@ -74,11 +81,10 @@ export const BasicCard = ({
         {
           !!errorMessage && (
             <Alert
-              title='ERR'
-              variant='outlined'
+              variant='filled'
               severity='error'
             >
-              {errorMessage}
+              {`Item Error: ${errorMessage}`}
             </Alert>
           )
         }
@@ -93,9 +99,13 @@ export const BasicCard = ({
         <Link to={localLink}>
           <Button
             variant='contained'
-            endIcon={<ArrowForwardIcon />}
+            endIcon={isNew ? <NewReleasesIcon /> : <ArrowForwardIcon />}
             size='small'
-            color={isActive ? 'secondary' : 'primary'}
+            color={
+              isLastSeen
+              ? 'secondary'
+              : 'primary'
+            }
           >
             Read
           </Button>

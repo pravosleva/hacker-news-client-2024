@@ -13,24 +13,24 @@ export type TNewsItemDetails = {
   parent?: number;
 }
 export enum ENewsMode {
-  TOPSTORIES = 'topstories',
-  NEWSTORIES = 'newstories',
-  BESTSTORIES = 'beststories',
-  SHOWSTORIES = 'showstories',
-  ASKSTORIES = 'askstories',
-  JOBSTORIES = 'jobstories',
+  TOP = 'topstories',
+  NEW = 'newstories',
+  BEST = 'beststories',
+  SHOW = 'showstories',
+  ASK = 'askstories',
+  JOB = 'jobstories',
 }
 export const uiDict = {
-  [ENewsMode.ASKSTORIES]: 'ask',
-  [ENewsMode.BESTSTORIES]: 'best',
-  [ENewsMode.JOBSTORIES]: 'job',
-  [ENewsMode.NEWSTORIES]: 'new',
-  [ENewsMode.SHOWSTORIES]: 'show',
-  [ENewsMode.TOPSTORIES]: 'top',
+  [ENewsMode.ASK]: 'ask',
+  [ENewsMode.BEST]: 'best',
+  [ENewsMode.JOB]: 'job',
+  [ENewsMode.NEW]: 'new',
+  [ENewsMode.SHOW]: 'show',
+  [ENewsMode.TOP]: 'top',
 }
 export type TNewsState = {
   newsMode: ENewsMode;
-  targetItemsCounters: {
+  loadedItemsCounters: {
     [key in ENewsMode]: number;
   };
   items: number[];

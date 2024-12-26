@@ -6,19 +6,19 @@ import { compareDESC } from '~/common/utils/number-ops'
 
 // Define the initial state for the slice
 const initialState: TNewsState = {
-  newsMode: ENewsMode.BESTSTORIES,
+  newsMode: ENewsMode.NEW,
   items: [],
   details: {},
   mainRequestResult: undefined,
   pollingCounter: 0,
   errors: {},
-  targetItemsCounters: {
-    [ENewsMode.ASKSTORIES]: 0,
-    [ENewsMode.BESTSTORIES]: 0,
-    [ENewsMode.JOBSTORIES]: 0,
-    [ENewsMode.NEWSTORIES]: 0,
-    [ENewsMode.SHOWSTORIES]: 0,
-    [ENewsMode.TOPSTORIES]: 0,
+  loadedItemsCounters: {
+    [ENewsMode.ASK]: 0,
+    [ENewsMode.BEST]: 0,
+    [ENewsMode.JOB]: 0,
+    [ENewsMode.NEW]: 0,
+    [ENewsMode.SHOW]: 0,
+    [ENewsMode.TOP]: 0,
   },
 };
 
@@ -34,7 +34,7 @@ const newsSlice = createSlice({
             state.items.includes(action.payload.originalResponse.id)
             && typeof state.details[String(action.payload.originalResponse.id)] === 'undefined'
           ) {
-            state.targetItemsCounters[state.newsMode] += 1
+            state.loadedItemsCounters[state.newsMode] += 1
           }
           state.details[String(action.payload.originalResponse.id)] = action.payload.originalResponse
 
@@ -69,23 +69,23 @@ const newsSlice = createSlice({
     resetMainRequestResult: (state) => {
       state.mainRequestResult = undefined
       // NOTE: Reset target counter
-      // state.targetItemsCounters[state.newsMode] = 0
+      // state.loadedItemsCounters[state.newsMode] = 0
     },
     refreshPolling: (state) => {
       for (const key in state.details) delete state.details[key]
       state.items = []
       state.errors = {}
-      state.targetItemsCounters[state.newsMode] = 0
+      state.loadedItemsCounters[state.newsMode] = 0
       state.pollingCounter += 1
     },
     resetNewsItemData: (state, action: PayloadAction<{ id: number; }>) => {
-      if (state.details[String(action.payload.id)]) state.targetItemsCounters[state.newsMode] -= 1
+      if (state.details[String(action.payload.id)]) state.loadedItemsCounters[state.newsMode] -= 1
 
       delete state.details[String(action.payload.id)]
       delete state.errors[String(action.payload.id)]
     },
     setNewsMode: (state, action: PayloadAction<{ mode: ENewsMode; }>) => {
-      state.targetItemsCounters[action.payload.mode] = 0
+      state.loadedItemsCounters[action.payload.mode] = 0
       state.newsMode = action.payload.mode
       for (const key in state.details) delete state.details[key]
       state.items = []

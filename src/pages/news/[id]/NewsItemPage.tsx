@@ -92,9 +92,8 @@ export const NewsItemPage = memo(() => {
         }
         {
           !!itemErrorInfo && (
-            <>
+            <div className={baseClasses.stack1}>
               <Alert
-                title={`#${id} ERRORED`}
                 variant='filled'
                 severity='error'
               >
@@ -107,7 +106,7 @@ export const NewsItemPage = memo(() => {
                   </pre>
                 )
               }
-            </>
+            </div>
           )
         }
         {

@@ -9,9 +9,10 @@ import { Alert, Skeleton } from '@mui/material'
 
 type TProps = {
   newsItemId: number;
+  isNew?: boolean;
 }
 
-export const NewsListItem = memo(({ newsItemId }: TProps) => {
+export const NewsListItem = memo(({ newsItemId, isNew }: TProps) => {
   const details = useSelector((s: TStore) => s.news.details)
   const itemData = useMemo<TNewsItemDetails | undefined>(() => details[String(newsItemId)], [details, newsItemId])
 
@@ -30,9 +31,10 @@ export const NewsListItem = memo(({ newsItemId }: TProps) => {
             author={itemData?.by}
             errorMessage={itemErrorInfo}
             localLink={`/news/${itemData.id}`}
+            isNew={isNew}
           />
         )
-      case !!itemData?.id && !!itemErrorInfo:
+      case !!itemErrorInfo:
         return (
           <Alert
             variant='filled'
@@ -46,7 +48,7 @@ export const NewsListItem = memo(({ newsItemId }: TProps) => {
           <Skeleton animation='wave' />
         )
     }
-  }, [itemData, itemErrorInfo, newsItemId])
+  }, [itemData, itemErrorInfo, newsItemId, isNew])
 
   return (
     <ErrorBoundary

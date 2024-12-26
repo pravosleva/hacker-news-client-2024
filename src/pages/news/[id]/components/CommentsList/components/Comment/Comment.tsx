@@ -65,9 +65,7 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
             // scrollToElm(targetElm)
             break
         }
-      } else {
-        console.error('No elm')
-      }
+      } else console.warn('No elm')
     }
     // --
   }, [params])
@@ -99,7 +97,7 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
                     <div
                       style={{
                         display: 'flex',
-                        gap: '8px',
+                        gap: '4px',
                         flexWrap: 'wrap',
                       }}
                     >
@@ -151,7 +149,6 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
               {
                 !!itemData?.text && (
                   <div dangerouslySetInnerHTML={{ __html: itemData.text }} />
-                  // <div>{itemData.text}</div>
                 )
               }
               {!!itemData?.time && <Box sx={{ color: 'text.secondary', fontSize: 'small', textAlign: 'right' }}>{getNormalizedDateTime(itemData?.time)}</Box>}
