@@ -19,14 +19,18 @@ export enum ENewsMode {
   SHOW = 'showstories',
   ASK = 'askstories',
   JOB = 'jobstories',
+  FAV = 'favorites',
 }
-export const uiDict = {
+export const uiDict: {
+  [key in ENewsMode]: string;
+} = {
   [ENewsMode.ASK]: 'ask',
   [ENewsMode.BEST]: 'best',
   [ENewsMode.JOB]: 'job',
   [ENewsMode.NEW]: 'new',
   [ENewsMode.SHOW]: 'show',
   [ENewsMode.TOP]: 'top',
+  [ENewsMode.FAV]: 'favorites',
 }
 export type TNewsState = {
   newsMode: ENewsMode;
@@ -45,4 +49,5 @@ export type TNewsState = {
     message?: string;
   } | undefined;
   pollingCounter: number;
+  persistedFavorites: number[];
 }

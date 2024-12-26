@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import CssBaseline from '@mui/material/CssBaseline'
 import { RouterProvider } from 'react-router-dom'
-import { memo, useCallback, useLayoutEffect } from 'react'
+import { memo, useCallback, useLayoutEffect, useMemo } from 'react'
 import { httpClient } from '~/common/utils/httpClient/httpClient'
 import { useWorkers } from '~/common/hooks'
 import { useSelector, useDispatch } from 'react-redux'
 import { TStore } from '~/common/store'
-import { setNewsItemData, setMainRequestResult, setNewsItemError } from '~/common/store/reducers/newsSlice'
+import { setNewsItemData, setMainRequestResult, setNewsItemError, ENewsMode } from '~/common/store/reducers/newsSlice'
 import { PollingComponent } from '~/common/components'
 import { NResponse } from '~/common/utils/httpClient/types'
 import { router } from './router'
@@ -39,7 +39,20 @@ export const App = memo(() => {
       mainPollingKey,
     },
   })
-  const targetPromise = useCallback(() => httpClient.getNews({ newsMode }), [newsMode])
+  const persistedFavorites = useSelector((s: TStore) => s.news.persistedFavorites)
+  const targetPromise = useCallback(() => {
+    switch (newsMode) {
+      case ENewsMode.FAV:
+        return Promise.resolve({
+          ok: true,
+          message: 'Taken from LS',
+          targetResponse: persistedFavorites,
+        })
+      default:
+        return httpClient.getNews({ newsMode })
+    }
+  },
+  [newsMode, persistedFavorites])
   // --
 
   return (

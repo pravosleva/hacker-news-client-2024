@@ -12,7 +12,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Alert, Skeleton } from '@mui/material'
 import { PollingComponent } from '~/common/components'
 import { NResponse, httpClient } from '~/common/utils/httpClient'
-import { setNewsItemData, setNewsItemError, TNewsItemDetails, resetNewsItemData } from '~/common/store/reducers'
+import { setNewsItemData, setNewsItemError, TNewsItemDetails, resetNewsItemData, addToPersistedFavorites, removeFromPersistedFavorites } from '~/common/store/reducers'
 import { CommentsList } from './components'
 import { compareDESC } from '~/common/utils/number-ops'
 import RefreshIcon from '@mui/icons-material/Refresh'
@@ -21,6 +21,10 @@ import { Layout } from '~/common/components'
 import classes from './NewsItemPage.module.scss'
 import clsx from 'clsx'
 import layoutClasses from '~/common/components/Layout/Layout.module.scss'
+// import SaveIcon from '@mui/icons-material/Save'
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 
 export const NewsItemPage = memo(() => {
   const { id } = useParams()
@@ -56,6 +60,23 @@ export const NewsItemPage = memo(() => {
       setPollingCounter((c) => c + 1)
     }
   }, [dispatch, id, setPollingCounter])
+
+  const favoritesIds = useSelector((s: TStore) => s.news.persistedFavorites)
+  const addToFavorites = useCallback(({ id }: {
+    id: number;
+  }) => () => typeof id === 'number'
+    ? dispatch(addToPersistedFavorites({ id: Number(id) }))
+    : undefined,
+    [dispatch]
+  )
+  const isFavorite = useMemo(() => favoritesIds.includes(Number(id)), [favoritesIds, id])
+  const removeFromFavorites = useCallback(({ id }: {
+    id: number;
+  }) => () => typeof id === 'number'
+    ? dispatch(removeFromPersistedFavorites({ id }))
+    : undefined,
+    [dispatch]
+  )
 
   return (
     <Layout>
@@ -217,6 +238,29 @@ export const NewsItemPage = memo(() => {
               size='small'
             >
               <RefreshIcon />
+            </Button>
+          )
+        }
+
+        {
+          isFavorite
+          ? (
+            <Button
+              variant='outlined'
+              size='small'
+              startIcon={<BookmarkRemoveIcon />}
+              onClick={removeFromFavorites({ id: Number(id) })}
+            >
+              Unfav
+            </Button>
+          ) : (
+            <Button
+              variant='outlined'
+              startIcon={<BookmarkAddIcon />}
+              size='small'
+              onClick={addToFavorites({ id: Number(id) })}
+            >
+              Fav
             </Button>
           )
         }

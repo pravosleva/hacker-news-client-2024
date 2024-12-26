@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react'
+import { useLayoutEffect, useMemo, useState } from 'react'
 import { Button, Card, Chip, CardContent, CardActions } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
@@ -9,6 +9,10 @@ import clsx from 'clsx'
 import classes from './BasicCard.module.scss'
 import NewReleasesIcon from '@mui/icons-material/NewReleases'
 import baseClasses from '~/App.module.scss'
+// import StarIcon from '@mui/icons-material/Star'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
+import { useSelector } from 'react-redux'
+import { TStore } from '~/common/store'
 
 type TProps = {
   id: number;
@@ -41,6 +45,9 @@ export const BasicCard = ({
     setIsLastSeen(idToScroll === String(id))
   }, [urlSearchParams, id, setIsLastSeen])
   // --
+
+  const favoritesIds = useSelector((s: TStore) => s.news.persistedFavorites)
+  const isFavorite = useMemo(() => favoritesIds.includes(Number(id)), [favoritesIds, id])
   
   return (
     <Card
@@ -95,7 +102,12 @@ export const BasicCard = ({
         <Link to={localLink}>
           <Button
             variant='contained'
-            endIcon={isNew ? <NewReleasesIcon /> : <ArrowForwardIcon />}
+            endIcon={
+              isFavorite
+              ? <BookmarkIcon />
+              : isNew
+                ? <NewReleasesIcon />
+                : <ArrowForwardIcon />}
             size='small'
             color={
               isLastSeen

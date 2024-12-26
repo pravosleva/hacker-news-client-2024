@@ -74,6 +74,7 @@ const withNewsService = async ({
                 for (const key in controllers) {
                   controllers[key].abort()
                   delete controllers[key]
+                  // controllers[String(eventData?.input?.dataPackKey)].abort()
                 }
                 
                 controllers[String(eventData?.input?.dataPackKey)] = new AbortController()
@@ -257,7 +258,6 @@ const withNewsService = async ({
 
             // await delay(100)
           }
-          signals[String(eventData?.input?.dataPackKey)].ab
           break
         }
         default: break

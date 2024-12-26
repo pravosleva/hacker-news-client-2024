@@ -19,7 +19,9 @@ const initialState: TNewsState = {
     [ENewsMode.NEW]: 0,
     [ENewsMode.SHOW]: 0,
     [ENewsMode.TOP]: 0,
+    [ENewsMode.FAV]: 0,
   },
+  persistedFavorites: [],
 };
 
 // Create the slice
@@ -57,7 +59,7 @@ const newsSlice = createSlice({
 
         // NOTE: (v2) По ТЗ требуется оставить последние 100, предварительно отсортировав
         const uiLimit = 100
-        const sortedIds = action.payload.result.targetResponse.sort(compareDESC)
+        const sortedIds = [...action.payload.result.targetResponse].sort(compareDESC)
         const someLast = []
         for (let i = 0, max = uiLimit; i < max; i++) {
           if (!sortedIds[i]) break
@@ -92,6 +94,22 @@ const newsSlice = createSlice({
       state.errors = {}
       state.pollingCounter += 1
     },
+    addToPersistedFavorites: (state, action: PayloadAction<{ id: number; }>) => {
+      const limit = 1000
+      switch (true) {
+        case state.persistedFavorites.length >= limit:
+          // NOTE: Remove last, add first
+          state.persistedFavorites.pop()
+          state.persistedFavorites.unshift(action.payload.id)
+          break
+        default:
+          state.persistedFavorites.unshift(action.payload.id)
+          break
+      }
+    },
+    removeFromPersistedFavorites: (state, action: PayloadAction<{ id: number; }>) => {
+      state.persistedFavorites = state.persistedFavorites.filter((id) => id !== action.payload.id)
+    },
   },
 });
 
@@ -99,4 +117,14 @@ const newsSlice = createSlice({
 export const newsReducer = newsSlice.reducer
 
 // Extract action creators from the slice
-export const { setNewsMode, setMainRequestResult, setNewsItemData, refreshPolling, setNewsItemError, resetMainRequestResult, resetNewsItemData } = newsSlice.actions
+export const {
+  setNewsMode,
+  setMainRequestResult,
+  setNewsItemData,
+  refreshPolling,
+  setNewsItemError,
+  resetMainRequestResult,
+  resetNewsItemData,
+  addToPersistedFavorites,
+  removeFromPersistedFavorites,
+} = newsSlice.actions
