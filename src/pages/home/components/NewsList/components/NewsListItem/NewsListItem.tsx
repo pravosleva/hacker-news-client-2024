@@ -37,7 +37,7 @@ export const NewsListItem = memo(({ newsItemId, isNew }: TProps) => {
       case !!itemErrorInfo:
         return (
           <Alert
-            variant='filled'
+            variant='outlined'
             severity='error'
           >
             {`#${newsItemId} ERRORED:`} {itemErrorInfo}

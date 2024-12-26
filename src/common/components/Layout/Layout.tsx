@@ -20,7 +20,7 @@ export const Layout = memo(({ children }: TProps) => {
         {children}
         <footer className={classes.siteFooter}>
           <div>{fullyear}</div>
-          <div>v{APP_VERSION}</div>
+          <div>version {APP_VERSION}</div>
           <div>GIT SHA1: {GIT_SHA1}</div>
         </footer>
       </div>

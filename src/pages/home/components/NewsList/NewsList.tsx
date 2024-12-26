@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux'
 import { TStore } from '~/common/store'
 import baseClasses from '~/App.module.scss'
 import { NewsListItem } from './components'
-import { Alert } from '@mui/material'
+// import { Chip } from '@mui/material'
 
 export const NewsList = memo(() => {
   const items = useSelector((s: TStore) => s.news.items)
-  const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
+  // const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
 
   // NOTE: Not good
   // if (mainResponseResult?.ok === false)
@@ -21,18 +21,15 @@ export const NewsList = memo(() => {
     : 0,
     [loadedTagetCounter, items.length])
 
+  // const ErrorChip = useMemo(() => mainResponseResult?.ok === false && !!mainResponseResult.message && (
+  //   <div><Chip className={baseClasses.truncate} label={mainResponseResult.message} size='small' color='error' /></div>
+  // ), [mainResponseResult])
+
   return (
     <div className={baseClasses.stack2}>
-      {
-        mainResponseResult?.ok === false && !!mainResponseResult.message && (
-          <Alert
-            variant='outlined'
-            severity='error'
-          >
-            {`List Error: ${mainResponseResult.message}`}
-          </Alert>
-        )
-      }
+      {/*
+        mainResponseResult?.ok === false && !!mainResponseResult.message && ErrorChip
+      */}
       {
         items?.map((id, i) => <NewsListItem key={String(id)} newsItemId={id} isNew={newSinceLastUpdateCounter > 0 ? newSinceLastUpdateCounter > i : false} />)
       }

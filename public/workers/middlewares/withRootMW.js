@@ -1,4 +1,4 @@
-importScripts('../utils/middlewares/withNewsService.js')
+importScripts('../middlewares/withNewsService.js')
 
 const compose = (fns, arg) => {
   return fns.reduce(

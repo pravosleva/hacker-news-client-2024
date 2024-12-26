@@ -16,9 +16,9 @@ const _perfInfo = {
 importScripts('../utils/events/types.js')
 importScripts('../utils/events/eValidator.js')
 importScripts('../utils/debug/debugConfig.js')
-importScripts('../utils/debug/tools.js')
+importScripts('../utils/debug/tools/log.js')
 importScripts('../utils/fetchRetry.js')
-importScripts('../utils/middlewares/withRootMW.js')
+importScripts('../middlewares/withRootMW.js')
 
 var window = self;
 
@@ -114,7 +114,7 @@ var window = self;
             input,
           }
         } = e
-  
+
         if (!!input?.opsEventType) {
           _perfInfo.tsList.push({
             descr: `c->[w:listener:opsEventType]->cb->client: ${input.opsEventType}`,
@@ -165,11 +165,11 @@ var window = self;
                 }
                 
                 switch (true) {
-                  case !output.ok:
-                    sendError()
+                  case output.ok === true:
+                    sendData()
                     break
                   default:
-                    sendData()
+                    sendError()
                     break
                 }
               }

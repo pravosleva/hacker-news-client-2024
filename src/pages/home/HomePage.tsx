@@ -14,6 +14,7 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import { Link } from 'react-router-dom'
 import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { TStore } from '~/common/store'
+import clsx from 'clsx'
 
 const BRAND_NAME = import.meta.env.VITE_BRAND_NAME
 
@@ -37,10 +38,17 @@ export const HomePage = memo(() => {
     : `${loadedTagetCounter} of ${items.length}`,
     [loadedTagetCounter, items.length])
 
+  const InfoChip = useMemo(() => items.length > 0 && <Chip className={baseClasses.truncate} label={infoText} size='small' />, [items.length, infoText])
+
+  const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
+  const ErrorChip = useMemo(() => mainResponseResult?.ok === false && !!mainResponseResult.message && (
+    <Chip className={baseClasses.truncate} label={mainResponseResult.message} size='small' color='error' />
+  ), [mainResponseResult])
+
   return (
     <Layout>
       <div
-        className={layoutStyles.stickyTop}
+        className={clsx(layoutStyles.stickyTop)}
         style={{
           display: 'flex',
           flexDirection: 'row',
@@ -49,9 +57,10 @@ export const HomePage = memo(() => {
           alignItems: 'center',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className={baseClasses.truncate}>
           <b>{BRAND_NAME}</b>
-          {items.length > 0 && <Chip label={infoText} size='small' />}
+          {InfoChip}
+          {ErrorChip}
         </div>
         <div
           style={{

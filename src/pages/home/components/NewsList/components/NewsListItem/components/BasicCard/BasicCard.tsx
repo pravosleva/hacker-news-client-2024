@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from 'react'
-import { Alert, Button, Card, CardContent, CardActions } from '@mui/material'
+import { Button, Card, Chip, CardContent, CardActions } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
@@ -8,6 +8,7 @@ import { useSearchParams } from 'react-router-dom'
 import clsx from 'clsx'
 import classes from './BasicCard.module.scss'
 import NewReleasesIcon from '@mui/icons-material/NewReleases'
+import baseClasses from '~/App.module.scss'
 
 type TProps = {
   id: number;
@@ -80,12 +81,7 @@ export const BasicCard = ({
         </Typography>
         {
           !!errorMessage && (
-            <Alert
-              variant='filled'
-              severity='error'
-            >
-              {`Item Error: ${errorMessage}`}
-            </Alert>
+            <Chip className={baseClasses.truncate} label={`Item Error: ${errorMessage}`} size='small' color='error' />
           )
         }
       </CardContent>

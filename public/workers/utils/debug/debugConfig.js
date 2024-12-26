@@ -4,7 +4,7 @@ var debugConfig = {
       isEnabled: false,
     },
     fromServer: {
-      isEnabled: true,
+      isEnabled: false,
     },
     mwsInternalLogs: {
       isEnabled: false,
@@ -12,7 +12,7 @@ var debugConfig = {
   },
   api: {
     responseByServer: {
-      isEnabled: true,
+      isEnabled: false,
     },
   },
   socketState: {

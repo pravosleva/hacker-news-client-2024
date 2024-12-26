@@ -92,8 +92,8 @@ const withNewsService = async ({
             } else {
               output = await fetchRetry({
                 url: `${baseApiUrl}/item/${id}.json?print=pretty`,
-                delay: 3 * 1000,
-                tries: 3,
+                delay: 2 * 1000,
+                tries: 2,
                 nativeFetchOptions: {
                   method: 'GET',
                   // headers: { 'Content-Type': 'application/json' },

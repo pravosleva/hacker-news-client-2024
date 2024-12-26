@@ -227,8 +227,8 @@ class Singleton {
 }
 
 export const wws = Singleton.getInstance({
-  noSharedWorkers: false,
-  isDebugEnabled: false,
+  noSharedWorkers: true,
+  isDebugEnabled: true,
 })
 
 // export type WWSSingleton = Singleton['activeIncomingChannels']

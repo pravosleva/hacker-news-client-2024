@@ -16,9 +16,9 @@ const _perfInfo = {
 importScripts('../utils/events/types.js')
 importScripts('../utils/events/eValidator.js')
 importScripts('../utils/debug/debugConfig.js')
-importScripts('../utils/debug/tools.js')
+importScripts('../utils/debug/tools/log.js')
 importScripts('../utils/fetchRetry.js')
-importScripts('../utils/middlewares/withRootMW.js')
+importScripts('../middlewares/withRootMW.js')
 
 var window = self
 let connectionsCounter = 0
@@ -174,13 +174,13 @@ let port // TODO? var ports = new Map()
                       },
                     })
                   }
-                  
+
                   switch (true) {
-                    case !output.ok:
-                      sendError()
+                    case output.ok === true:
+                      sendData()
                       break
                     default:
-                      sendData()
+                      sendError()
                       break
                   }
                 }
