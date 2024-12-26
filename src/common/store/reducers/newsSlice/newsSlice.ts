@@ -106,11 +106,11 @@ const newsSlice = createSlice({
           state.persistedFavorites.unshift(action.payload.id)
           break
       }
-      state.pollingCounter += 1
+      if (state.newsMode === ENewsMode.FAV) state.pollingCounter += 1
     },
     removeFromPersistedFavorites: (state, action: PayloadAction<{ id: number; }>) => {
       state.persistedFavorites = state.persistedFavorites.filter((id) => id !== action.payload.id)
-      state.pollingCounter += 1
+      if (state.newsMode === ENewsMode.FAV) state.pollingCounter += 1
     },
   },
 });
