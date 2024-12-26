@@ -112,6 +112,7 @@ const newsSlice = createSlice({
       state.persistedFavorites = state.persistedFavorites.filter((id) => id !== action.payload.id)
       if (state.newsMode === ENewsMode.FAV) {
         delete state.details[String(action.payload.id)]
+        state.loadedItemsCounters[state.newsMode] -= 1
         state.pollingCounter += 1
       }
     },
