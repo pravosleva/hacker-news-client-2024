@@ -47,7 +47,7 @@ export const HomePage = memo(() => {
       className={baseClasses.truncate}
       label={infoText}
       size='small'
-      color={loadedTagetCounter > items.length ? 'success' : 'default'}
+      color={loadedTagetCounter > items.length ? 'info' : 'default'}
     />
   ), [items.length, infoText, loadedTagetCounter])
 
