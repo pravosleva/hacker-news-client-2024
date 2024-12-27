@@ -8,11 +8,13 @@ import { newsReducer } from './reducers/newsSlice'
 // NOTE: Все же решил в этот раз не использовать mws
 // import { apiSlice } from './api/apiSlice'
 
-const rootPersistConfig = {
-  key: 'root',
-  storage,
-  whitelist: [],
-}
+// -- NOTE: 1/2 Persist root keys
+// const rootPersistConfig = {
+//   key: 'root',
+//   storage,
+//   whitelist: [],
+// }
+// --
 const persistNewsConfig = {
   key: 'news',
   storage,
@@ -24,7 +26,10 @@ const rootReducer = combineReducers({
   // NOTE: etc.
 })
 
-const store = configureStore({ reducer: persistReducer(rootPersistConfig, rootReducer) })
+// -- NOTE: 2/2 Persist root keys
+// const store = configureStore({ reducer: persistReducer(rootPersistConfig, rootReducer) })
+// --
+const store = configureStore({ reducer: rootReducer })
 
 // NOTE: This creates a persistor object
 // & push that persisted object to .__persistor, so that we can avail the persistability feature

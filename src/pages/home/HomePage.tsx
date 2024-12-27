@@ -1,5 +1,5 @@
 import { Button, Chip } from '@mui/material'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useLayoutEffect, useMemo } from 'react'
 import { NewsList } from './components'
 import { ErrorFallback } from '~/common/components'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -37,6 +37,11 @@ export const HomePage = memo(() => {
     ? `+${loadedTagetCounter - items.length} since last update`
     : `${loadedTagetCounter} of ${items.length}`,
     [loadedTagetCounter, items.length])
+
+  useLayoutEffect(() => {
+    if (loadedTagetCounter > items.length) document.title = `${BRAND_NAME} (+${loadedTagetCounter - items.length})`
+    else document.title = BRAND_NAME
+  }, [loadedTagetCounter, items.length])
 
   const InfoChip = useMemo(() => items.length > 0 && <Chip className={baseClasses.truncate} label={infoText} size='small' />, [items.length, infoText])
 

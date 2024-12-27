@@ -12,14 +12,16 @@ type TProps = {
 }
 
 export const Layout = memo(({ children }: TProps) => {
-  const fullyear = useMemo(() => new Date().getFullYear(), [])
+  const currentYear = useMemo(() => new Date().getFullYear(), [])
+  const createdYear = 2024
+  const isCreactedCurrentYear = useMemo(() => currentYear === createdYear, [createdYear, currentYear])
 
   return (
     <>
       <div className={clsx(classes.layoutWrapper, baseClasses.stack0)}>
         {children}
         <footer className={classes.siteFooter}>
-          <div>{fullyear}</div>
+          <div>{isCreactedCurrentYear ? currentYear : `${createdYear} — ${currentYear}`}</div>
           <div>version {APP_VERSION}</div>
           <div>GIT SHA1: {GIT_SHA1}</div>
         </footer>
