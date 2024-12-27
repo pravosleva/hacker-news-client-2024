@@ -17,7 +17,9 @@ export const App = memo(() => {
   const dispatch = useDispatch()
   const handleEachResponse = useCallback(({ data }: {
     data: NResponse.TMinimalStandart<number[]>;
-  }) => dispatch(setMainRequestResult({ result: data })), [dispatch])
+  }) => {
+    dispatch(setMainRequestResult({ result: data }))
+  }, [dispatch])
 
   const items = useSelector((s: TStore) => s.news.items)
   const newsMode = useSelector((s: TStore) => s.news.newsMode)
@@ -38,7 +40,7 @@ export const App = memo(() => {
     },
   })
   const persistedFavorites = useSelector((s: TStore) => s.news.persistedFavorites)
-  const targetPromise = useCallback(() => {
+  const targetPromise = useCallback((): Promise<NResponse.TMinimalStandart<number[]>> => {
     switch (newsMode) {
       case ENewsMode.FAV:
         return Promise.resolve({
@@ -57,9 +59,9 @@ export const App = memo(() => {
     <>
       <CssBaseline />
       <RouterProvider router={router} />
-      <PollingComponent
+      <PollingComponent<number[]>
         key={mainPollingKey}
-        resValidator={(_data: NResponse.TMinimalStandart<number[]>) => false}
+        resValidator={(_data) => false}
         onEachResponse={handleEachResponse}
         onSuccess={(_ps: { data: NResponse.TMinimalStandart<number[]> }) => {
           // NOTE: Never, cuz resValidator() => false

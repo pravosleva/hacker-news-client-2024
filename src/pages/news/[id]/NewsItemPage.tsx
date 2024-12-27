@@ -198,9 +198,9 @@ export const NewsItemPage = memo(() => {
           )
         }
 
-        <PollingComponent
+        <PollingComponent<TNewsItemDetails>
           key={pollingCounter}
-          resValidator={(_data: NResponse.TMinimalStandart<TNewsItemDetails>) => false}
+          resValidator={(_data) => false}
           onEachResponse={handleEachResponse}
           onSuccess={(_ps: { data: NResponse.TMinimalStandart<TNewsItemDetails> }) => {
             // NOTE: Never, cuz resValidator() => false

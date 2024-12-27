@@ -3,9 +3,11 @@ import classes from './Layout.module.scss'
 import baseClasses from '~/App.module.scss'
 import clsx from 'clsx'
 import { FixedScrollTopBtn } from './components'
+import layoutClasses from './Layout.module.scss'
 
 const APP_VERSION = import.meta.env.VITE_APP_VERSION
 const GIT_SHA1 = import.meta.env.VITE_GIT_SHA1
+const GIT_BRANCH_NAME = import.meta.env.VITE_GIT_BRANCH_NAME
 
 type TProps = {
   children: React.ReactNode;
@@ -21,9 +23,11 @@ export const Layout = memo(({ children }: TProps) => {
       <div className={clsx(classes.layoutWrapper, baseClasses.stack0)}>
         {children}
         <footer className={classes.siteFooter}>
+          <div>App version <code className={layoutClasses.code}>{APP_VERSION}</code></div>
+          <div>GIT SHA-1: <code className={layoutClasses.code}>{GIT_SHA1}</code></div>
+          <div>GIT branch name: <code className={layoutClasses.code}>{GIT_BRANCH_NAME}</code></div>
+          <div>©</div>
           <div>{isCreactedCurrentYear ? currentYear : `${createdYear} — ${currentYear}`}</div>
-          <div>version {APP_VERSION}</div>
-          <div>GIT SHA1: {GIT_SHA1}</div>
         </footer>
       </div>
       <FixedScrollTopBtn />

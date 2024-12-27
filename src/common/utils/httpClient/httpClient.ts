@@ -1,6 +1,5 @@
 import axios, { CancelTokenSource } from 'axios'
 import { API, TAPIProps } from './API'
-import { NResponse } from './types'
 import { ENewsMode, TNewsItemDetails } from '~/common/store/reducers/newsSlice/types'
 
 const VITE_BASE_API_URL = import.meta.env.VITE_BASE_API_URL
@@ -44,10 +43,10 @@ class Singleton extends API {
 
   async getNewsItem({ id }: {
     id: number;
-  }): Promise<{ ok: boolean; message?: string; targetResponse: NResponse.TMinimalStandart<TNewsItemDetails> }> {
+  }): Promise<{ ok: boolean; message?: string; targetResponse: TNewsItemDetails }> {
     if (Number.isNaN(id)) return Promise.reject({ ok: false, message: 'Incorrect param id.' })
 
-    const data = await this.api<NResponse.TMinimalStandart<TNewsItemDetails>>({
+    const data = await this.api<TNewsItemDetails>({
       url: `/item/${id}.json?print=pretty`,
       method: 'GET',
     })

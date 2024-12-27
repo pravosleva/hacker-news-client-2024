@@ -9,11 +9,11 @@
     "yarn": ">=1.22.22"
   },
   "scripts": {
-    "dev": "VITE_APP_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') VITE_GIT_SHA1=$(git show --format=\"%h\" --no-patch) vite --port 3001 --open",
+    "dev": "VITE_APP_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') VITE_GIT_SHA1=$(git show --format=\"%h\" --no-patch) VITE_GIT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD) vite --port 3001 --open",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite --port 3000 --open preview",
-    "build:prod": "tsc && VITE_APP_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') VITE_GIT_SHA1=$(git show --format=\"%h\" --no-patch) vite build --mode production --emptyOutDir",
+    "build:prod": "tsc && VITE_APP_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g') VITE_GIT_SHA1=$(git show --format=\"%h\" --no-patch) VITE_GIT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD) vite build --mode production --emptyOutDir",
     "_deploy2:staging": "yarn build:prod && bash _aux-tool.deploy2.prod.sh"
   },
   "dependencies": {

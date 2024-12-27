@@ -1,14 +1,15 @@
-import { useRef, useState, useCallback, memo, useLayoutEffect } from 'react'
+import { useRef, useState, useCallback, useLayoutEffect } from 'react'
 import baseClasses from '~/App.module.scss'
 // import { Alert, Loader } from '~/common/components/sp-custom'
-import clsx from 'clsx'
 import { NResponse } from '~/common/utils/httpClient/types'
 import { Alert } from '@mui/material'
+import { groupLog } from '~/common/utils'
 
+type TResValidator = <T>(data: T) => boolean;
 type TProps<T> = {
   delay?: number;
-  resValidator: (data: any) => boolean;
-  _resFormatValidator?: (json: any) => boolean;
+  resValidator: TResValidator;
+  _resFormatValidator?: TResValidator;
   onEachResponse?: ({ data }: { data: T }) => void;
   onSuccess: ({ data }: { data: T }) => void;
   promise: () => Promise<T>;
@@ -16,7 +17,7 @@ type TProps<T> = {
   renderer?: ({ isWorking }: { isWorking: boolean }) => React.ReactNode;
 };
 
-export const PollingComponent = memo(({
+export function PollingComponent<TExpectedResult>({
   delay = 1000,
   resValidator,
   _resFormatValidator,
@@ -25,24 +26,44 @@ export const PollingComponent = memo(({
   promise,
   isDebugEnabled,
   renderer,
-}: TProps<NResponse.TMinimalStandart<any>>) => {
+}: TProps<NResponse.TMinimalStandart<TExpectedResult>>) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isWorking, setIsWorking] = useState<boolean>(true)
   const [retryCounter, setRetryCounter] = useState<number>(0)
-  const [lastResponse, setLastResponse] = useState<NResponse.TMinimalStandart<any> | null>(null)
+  const [lastResponse, setLastResponse] = useState<NResponse.TMinimalStandart<TExpectedResult> | null>(null)
 
   const updateCounterIfNecessary = useCallback(async () => {
     await promise()
       .then((data) => {
-        setLastResponse(data)
+        setLastResponse(data as NResponse.TMinimalStandart<TExpectedResult>)
         if (resValidator(data)) {
           setIsWorking(false)
-          onSuccess({ data })
+          onSuccess({ data: data as NResponse.TMinimalStandart<TExpectedResult> })
         }
         else setRetryCounter((c) => c + 1)
       })
-      .catch((_err: any) => {
-        setLastResponse(_err)
+      .catch((err: unknown) => {
+        switch (true) {
+          case err instanceof Error:
+            setLastResponse({ ok: false, message: err?.message, targetResponse: undefined })
+            break
+          case typeof (err as NResponse.TMinimalStandart<TExpectedResult>)?.message === 'string': {
+            const errCopy = err as NResponse.TMinimalStandart<TExpectedResult>
+            setLastResponse({
+              ok: false,
+              message: errCopy?.message,
+              targetResponse: errCopy?.targetResponse,
+            })
+            break
+          }
+          default:
+            groupLog({
+              namespace: 'POLL: ⛔ Unknown error format',
+              items: [err]
+            })
+            setLastResponse({ ok: false, message: 'Unknown error format', targetResponse: undefined })
+            break
+        }
 
         setRetryCounter((c) => c + 1)
       })
@@ -81,8 +102,6 @@ export const PollingComponent = memo(({
         <>
           {!!renderer && renderer({ isWorking })}
           <div className={baseClasses.stack2}>
-            <h2 className='text-3xl font-bold'><code className={baseClasses.inlineCode}>PollingComponent</code> debug</h2>
-
             {isWorking && (
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 Loader...
@@ -94,7 +113,7 @@ export const PollingComponent = memo(({
               severity={lastResponse?.ok ? 'success' : 'error'}
               variant='outlined'
             >
-              <pre className={clsx('text-sm', baseClasses.preNormalized)}>{JSON.stringify(lastResponse, null, 2)}</pre>
+              <pre className={baseClasses.preNormalized}>{JSON.stringify(lastResponse, null, 2)}</pre>
             </Alert>
           </div>
         </>
@@ -102,4 +121,4 @@ export const PollingComponent = memo(({
     default:
       return !!renderer ? renderer({ isWorking }) : null
   }
-})
+}
