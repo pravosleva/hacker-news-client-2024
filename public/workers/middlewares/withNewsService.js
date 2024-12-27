@@ -186,10 +186,10 @@ const withNewsService = async ({
                       },
                       type: {
                         isRequired: true,
-                        type: 'story|comment|poll|pollopt',
+                        type: 'job|story|comment|poll|pollopt',
                         descr: 'The type of item. One of "job", "story", "comment", "poll", or "pollopt".',
                         validate: (val) => {
-                          const possibleVals = ['story', 'comment', 'poll', 'pollopt']
+                          const possibleVals = ['job', 'story', 'comment', 'poll', 'pollopt']
                           return {
                             ok: typeof val === 'string' && possibleVals.includes(val),
                             reason: 'Ожидается значение из списка допустимых',

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import CssBaseline from '@mui/material/CssBaseline'
 import { RouterProvider } from 'react-router-dom'
-import { memo, useCallback, useLayoutEffect, useMemo } from 'react'
+import { memo, useCallback, useLayoutEffect } from 'react'
 import { httpClient } from '~/common/utils/httpClient/httpClient'
 import { useWorkers } from '~/common/hooks'
 import { useSelector, useDispatch } from 'react-redux'
@@ -29,10 +29,8 @@ export const App = memo(() => {
   useWorkers({
     isDebugEnabled: false,
     cb: {
-      onEachNewsItemData: (data) =>
-        dispatch(setNewsItemData(data)),
-      onFinalError: ({ id, reason }) =>
-        dispatch(setNewsItemError({ id, reason })),
+      onEachNewsItemData: (data) => dispatch(setNewsItemData(data)),
+      onFinalError: ({ id, reason }) => dispatch(setNewsItemError({ id, reason })),
     },
     deps: {
       newsIds: items,

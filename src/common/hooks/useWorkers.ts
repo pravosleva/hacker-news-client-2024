@@ -2,6 +2,7 @@ import { useLayoutEffect, useCallback } from 'react'
 import { groupLog, wws } from '~/common/utils'
 import { NWService } from '~/common/utils/wws/types'
 import { TNewsItemDetails } from '~/common/store/reducers/newsSlice'
+import pkg from '../../../package.json'
 
 const BASE_API_URL = import.meta.env.VITE_BASE_API_URL
 
@@ -150,7 +151,7 @@ export const useWorkers = ({ isDebugEnabled, deps, cb }: TProps) => {
       data: {
         input: {
           baseApiUrl: BASE_API_URL,
-          appVersion: '[wip]',
+          appVersion: pkg.version,
           ...input,
         },
       },
