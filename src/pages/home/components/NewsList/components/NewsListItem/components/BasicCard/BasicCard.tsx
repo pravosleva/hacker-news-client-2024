@@ -9,7 +9,6 @@ import clsx from 'clsx'
 import classes from './BasicCard.module.scss'
 import NewReleasesIcon from '@mui/icons-material/NewReleases'
 import baseClasses from '~/App.module.scss'
-// import StarIcon from '@mui/icons-material/Star'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { useSelector } from 'react-redux'
 import { TStore } from '~/common/store'
@@ -66,9 +65,6 @@ export const BasicCard = ({
         },
       )}
     >
-      {/*isNew && (
-        <div className={classes.absoluteLabel}>NEW</div>
-      )*/}
       <CardContent sx={{ padding: '8px' }}>
         <div
           style={{

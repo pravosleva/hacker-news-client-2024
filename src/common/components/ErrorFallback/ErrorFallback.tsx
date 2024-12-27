@@ -22,9 +22,7 @@ const CustomAlert = styled(Alert)(({ theme }) => ({
     },
     backgroundColor: theme.palette.primary.main
   },
-  // [`& .${classes.cta}`]: {
-  //   borderRadius: theme.shape.radius
-  // },
+  // [`& .${classes.cta}`]: { borderRadius: theme.shape.radius },
   [`& .${classes.content}`]: {
     color: theme.palette.common.white,
     fontSize: 16,
@@ -33,7 +31,6 @@ const CustomAlert = styled(Alert)(({ theme }) => ({
 }))
 
 export const ErrorFallback = ({ error, resetErrorBoundary, customPossibleReason }: TProps) => {
-  // const classes = useStyles()
   const { message } = error
 
   return (

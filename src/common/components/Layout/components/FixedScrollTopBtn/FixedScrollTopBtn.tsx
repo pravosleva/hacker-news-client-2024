@@ -1,4 +1,3 @@
-/* eslint-disable no-extra-boolean-cast */
 import { useRef, useCallback, memo, useLayoutEffect } from 'react'
 import { useScrollPosition, IWindowDims } from '~/common/hooks/useScrollPosition'
 import clsx from 'clsx'

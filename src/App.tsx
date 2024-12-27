@@ -44,7 +44,7 @@ export const App = memo(() => {
       case ENewsMode.FAV:
         return Promise.resolve({
           ok: true,
-          message: 'Taken from LS',
+          message: 'Should be taken from LS',
           targetResponse: persistedFavorites,
         })
       default:
@@ -62,7 +62,7 @@ export const App = memo(() => {
         key={mainPollingKey}
         resValidator={(_data) => false}
         onEachResponse={handleEachResponse}
-        onSuccess={(_ps: { data: NResponse.TMinimalStandart<number[]> }) => {
+        onSuccess={(_ps) => {
           // NOTE: Never, cuz resValidator() => false
         }}
         promise={targetPromise}
