@@ -30,7 +30,6 @@ export const HomePage = memo(() => {
   }, [dispatch])
 
   const items = useSelector((s: TStore) => s.news.items)
-  // const details = useSelector((s: TStore) => s.news.details)
   const loadedCounters = useSelector((s: TStore) => s.news.loadedItemsCounters)
   const loadedTagetCounter = useMemo(() => loadedCounters[newsMode], [loadedCounters, newsMode])
   const infoText = useMemo(() => loadedTagetCounter > items.length
@@ -43,7 +42,14 @@ export const HomePage = memo(() => {
     else document.title = BRAND_NAME
   }, [loadedTagetCounter, items.length])
 
-  const InfoChip = useMemo(() => items.length > 0 && <Chip className={baseClasses.truncate} label={infoText} size='small' />, [items.length, infoText])
+  const InfoChip = useMemo(() => items.length > 0 && (
+    <Chip
+      className={baseClasses.truncate}
+      label={infoText}
+      size='small'
+      color={loadedTagetCounter > items.length ? 'success' : 'default'}
+    />
+  ), [items.length, infoText, loadedTagetCounter])
 
   const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
   const ErrorChip = useMemo(() => mainResponseResult?.ok === false && !!mainResponseResult.message && (
@@ -121,16 +127,13 @@ export const HomePage = memo(() => {
           size='small'
           variant='standard'
         >
-          {/* <InputLabel id='mode-select-label'>Mode</InputLabel> */}
           <Select
             size='small'
-            // sx={{ borderRadius: '8px' }}
             labelId='mode-select-label'
             id='mode-select'
             value={newsMode}
             renderValue={() => <small><code>{uiDict[newsMode]}</code></small>}
             label='Mode'
-            // input={<CustomizedTextField label='Client app version' />}
             onChange={handleChangeNewsMode}
           >
             {Object.values(ENewsMode).map((str) => <MenuItem key={str} value={str}>{uiDict[str]}</MenuItem>)}

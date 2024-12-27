@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-extra-boolean-cast */
 import { memo, useMemo, useCallback, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -21,9 +19,7 @@ import { Layout } from '~/common/components'
 import classes from './NewsItemPage.module.scss'
 import clsx from 'clsx'
 import layoutClasses from '~/common/components/Layout/Layout.module.scss'
-// import SaveIcon from '@mui/icons-material/Save'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
-// import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
 
 export const NewsItemPage = memo(() => {
@@ -103,9 +99,6 @@ export const NewsItemPage = memo(() => {
       </div>
       <div
         className={clsx(baseClasses.stack3, classes.article)}
-        // style={{
-        //   paddingTop: '30px',
-        // }}
         id={String(itemData?.id || 'unknown-id')}
       >
         {
@@ -164,14 +157,6 @@ export const NewsItemPage = memo(() => {
             >{itemData?.url}</a>
           )
         }
-        {/*
-          !!itemData && (
-            <pre className={baseClasses.preNormalized}>
-              {JSON.stringify(itemData, null, 2)}
-            </pre>
-          )
-        */}
-
         {
           !!itemData && (
             <>

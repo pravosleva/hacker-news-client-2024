@@ -16,7 +16,7 @@ export type TRaxConfig = {
   // NOTE: If you are using a non static instance of Axios you need to pass that instance here (const ax = axios.create())
   instance?: AxiosInstance;
   // NOTE: You can detect when a retry is happening, and figure out how many retry attempts have been made
-  onRetryAttempt?: (err: AxiosError<unknown, any>) => void;
+  onRetryAttempt?: (err: AxiosError<unknown, unknown>) => void;
   currentRetryAttempt?: number;
 }
 

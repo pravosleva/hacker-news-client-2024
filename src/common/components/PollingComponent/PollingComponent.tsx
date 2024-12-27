@@ -1,15 +1,14 @@
 import { useRef, useState, useCallback, useLayoutEffect } from 'react'
 import baseClasses from '~/App.module.scss'
-// import { Alert, Loader } from '~/common/components/sp-custom'
 import { NResponse } from '~/common/utils/httpClient/types'
 import { Alert } from '@mui/material'
 import { groupLog } from '~/common/utils'
 
-type TResValidator = <T>(data: T) => boolean;
-type TProps<T> = {
+type TResValidator<T> = (data: T) => boolean;
+type TProps<T, TER> = {
   delay?: number;
-  resValidator: TResValidator;
-  _resFormatValidator?: TResValidator;
+  resValidator: TResValidator<T>;
+  _resFormatValidator?: TResValidator<TER | undefined>;
   onEachResponse?: ({ data }: { data: T }) => void;
   onSuccess: ({ data }: { data: T }) => void;
   promise: () => Promise<T>;
@@ -26,7 +25,7 @@ export function PollingComponent<TExpectedResult>({
   promise,
   isDebugEnabled,
   renderer,
-}: TProps<NResponse.TMinimalStandart<TExpectedResult>>) {
+}: TProps<NResponse.TMinimalStandart<TExpectedResult>, TExpectedResult>) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isWorking, setIsWorking] = useState<boolean>(true)
   const [retryCounter, setRetryCounter] = useState<number>(0)

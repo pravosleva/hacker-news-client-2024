@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-extra-boolean-cast */
 import clsx from 'clsx'
 import classes from './Comment.module.scss'
 import { PollingComponent } from '~/common/components'
@@ -62,7 +60,6 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
             break
           default:
             targetElm.scrollIntoView({ behavior: 'smooth', block: 'center' })
-            // scrollToElm(targetElm)
             break
         }
       } else console.warn('No elm')
@@ -167,16 +164,7 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
               promise={() => httpClient.getNewsItem({ id })}
               delay={60 * 1000}
               // isDebugEnabled
-              // renderer={({ isWorking }) => {
-              //   return (
-              //     isWorking
-              //     ? (
-              //       <div style={{ position: 'absolute', top: '2px', right: '2px', fontSize: '8px' }}>
-              //         poll...
-              //       </div>
-              //     ) : null
-              //   )
-              // }}
+              // renderer={({ isWorking }) => {}}
             />
           )
         }

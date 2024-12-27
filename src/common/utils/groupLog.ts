@@ -1,6 +1,6 @@
 export type TGroupLogProps = {
   namespace: string;
-  items: any[];
+  items: unknown[];
 }
 
 export const groupLog = ({ namespace, items }: TGroupLogProps): void => {

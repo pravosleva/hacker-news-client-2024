@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosResponse, CancelToken } from 'axios'
 import clsx from 'clsx'
 import * as rax from 'retry-axios' // NOTE: See also https://www.npmjs.com/package/retry-axios
 import { groupLog, TGroupLogProps } from '~/common/utils'
@@ -11,7 +10,9 @@ import { TRaxConfig, TAPIProps } from './types'
 type TApiInstanceProps = {
   url: string;
   method: 'POST' | 'GET';
-  data?: any;
+  data?: {
+    [key: string]: string | number;
+  };
   cancelToken?: CancelToken;
 }
 
@@ -57,8 +58,8 @@ export class API {
             ].join(', '))
           else
             msgs.push(internalAxiosRequestConfig?.url)
-        } catch (err: any) {
-          msgs.push(`ERR (impossible): Не удалось проанализировать попытку запроса: ${err.message || 'No err.message'}`)
+        } catch (err: unknown) {
+          msgs.push(`ERR (impossible): Не удалось проанализировать попытку запроса: ${(err as Error).message || 'No err.message'}`)
           console.warn(err)
         } finally {
           this.log({ namespace: 'API:rax', items: msgs })
@@ -84,21 +85,26 @@ export class API {
         }
         return { ok: true, res: axiosRes.data }
         // NOTE: Catch clause variable type annotation must be 'any' or 'unknown' if specified.ts(1196)
-      } catch (err: any) {
-        return { ok: false, res: axiosRes?.data || err, message: err?.message || 'No err.message' }
+      } catch (err: unknown) {
+        return { ok: false, res: axiosRes?.data || err, message: (err as Error)?.message || 'No err.message' }
       }
     }
   }
 
-  async api<T>({ url, method, data, cancelToken }: TApiInstanceProps): Promise<{ ok: boolean; message?: string; targetResponse: T }> {
-    const axioOpts: AxiosRequestConfig<TApiInstanceProps> = {
+  async api<T>({ url, method, data, cancelToken }: TApiInstanceProps): Promise<{
+    ok: boolean;
+    message?: string;
+    targetResponse?: T;
+  }> {
+    const axioOpts: TApiInstanceProps = {
       method,
       url,
       // @ts-ignore
       mode: 'cors',
       cancelToken,
+      data: undefined,
     }
-    if (data) axioOpts.data = data
+    if (typeof data === 'object' && !!data) axioOpts.data = data
 
     const result = await this.axiosInstance(axioOpts)
       .then(
@@ -111,25 +117,29 @@ export class API {
           return true
         })
       )
-      .then(({ res }) => {
+      .then(({ res }: { res: T }) => {
         return {
           ok: true,
           message: '[DBG] Response modified in API instance',
           targetResponse: res,
         }
       })
-      .catch((err: any) => {
-        const _msgs = []
+      .catch((err: unknown) => {
+        const _msgs = ['Ошибка']
         try {
-          _msgs.push(err?.toString())
-        } catch (er: any) {
-          _msgs.push(`[DBG] ERR: ${err?.message || er?.message || 'No er.message'}`)
+          const msg = err?.toString()
+          if (typeof msg === 'string')
+            _msgs.push(msg)
+        } catch (er: unknown) {
+          _msgs.push(`[DBG] ERR: ${(err as AxiosError)?.message || (er as Error)?.message || 'No er.message'}`)
         }
-        // eslint-disable-next-line no-extra-boolean-cast
-        if (!!err?.response?.config.url) _msgs.push(err?.response?.config.url)
 
+        const msg = (err as AxiosError)?.response?.config.url
+        if (typeof msg === 'string' && !!msg)
+          _msgs.push(msg)
         if (axios.isCancel(err)) {
-          console.log('Request canceled', err.message)
+          if (!!err?.message) _msgs.push(err.message)
+          else _msgs.push('Request canceled')
         } else {
           switch (true) {
             case err instanceof AxiosError:
@@ -138,20 +148,20 @@ export class API {
               return {
                 ok: false,
                 message: [..._msgs].join(' • '),
-                targetResponse: err?.response,
+                // targetResponse: (err as AxiosError)?.response,
               }
             default:
               return {
                 ok: false,
-                message: err?.message,
-                targetResponse: err,
+                message: [..._msgs, (err as Error)?.message || 'No message'].join(' • '),
+                // targetResponse: err,
               }
           }
         }
         return {
           ok: false,
           message: [..._msgs].join(' • '),
-          targetResponse: err,
+          // targetResponse: err,
         }
       })
 

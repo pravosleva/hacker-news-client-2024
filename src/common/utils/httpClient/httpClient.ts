@@ -21,7 +21,11 @@ class Singleton extends API {
 
   async getNews({ newsMode }: {
     newsMode: ENewsMode;
-  }): Promise<{ ok: boolean; message?: string; targetResponse: number[] }> {
+  }): Promise<{
+    ok: boolean;
+    message?: string;
+    targetResponse?: number[];
+  }> {
     this.getNewsTokenSource.cancel('axios request canceled')
     this.getNewsTokenSource = axios.CancelToken.source()
 
@@ -43,7 +47,11 @@ class Singleton extends API {
 
   async getNewsItem({ id }: {
     id: number;
-  }): Promise<{ ok: boolean; message?: string; targetResponse: TNewsItemDetails }> {
+  }): Promise<{
+    ok: boolean;
+    message?: string;
+    targetResponse?: TNewsItemDetails;
+  }> {
     if (Number.isNaN(id)) return Promise.reject({ ok: false, message: 'Incorrect param id.' })
 
     const data = await this.api<TNewsItemDetails>({

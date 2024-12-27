@@ -1,16 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { groupLog } from '~/common/utils/groupLog'
+import { getSplittedCamelCase } from '~/common/utils/string-ops'
 import { NWService } from './types'
 import packageJson from '../../../../package.json'
 
 const PUBLIC_URL = import.meta.env.VITE_PUBLIC_URL
-// const BASE_API_URL = import.meta.env.VITE_BASE_API_URL
-
-// Function to extract a word
-function getSplittedCamelCase(identifier: string): string[] {
-  return identifier.match(/.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)/g) || [];
-}
 
 type TProps = {
   noSharedWorkers?: boolean;
@@ -30,7 +23,6 @@ class Singleton {
   };
   private noSharedWorkers: boolean | undefined;
   private isDebugEnabled: boolean | undefined;
-  // private workersForReInitOnEachPostFromClient: string[];
   public activeIncomingChannels: {
     [key: string]: number;
   };
@@ -44,12 +36,6 @@ class Singleton {
     this.initWorker({ wName: 'newsWorker' })
     this.activeIncomingChannels.newsWorker = 0
     // NOTE: Other workers could be loaded and used...
-
-    // NOTE: Некоторые воркеры, занятые в текущий момент проще ликвидировать и создать заново
-    // чтоб не дожидаться выполнения процедур внутри
-    // this.workersForReInitOnEachPostFromClient = [
-    //   'newsWorker'
-    // ]
   }
   public setActiveIncomingChannels({ wName, value }: {
     wName: string;
@@ -83,7 +69,7 @@ class Singleton {
           break
       }
       return Promise.resolve(result)
-    } catch (_err: any) {
+    } catch (_err: unknown) {
       this.workers.newsWorker = new Worker(`${PUBLIC_URL}/workers/news.dedicated-worker.js?v=${packageJson.version}&ts=${new Date().getTime()}`)
       return Promise.reject(result)
     }
@@ -117,7 +103,7 @@ class Singleton {
   }
   private log ({ label, msgs }: {
     label: string;
-    msgs?: any[];
+    msgs?: unknown[];
   }): void {
     if (this.isDebugEnabled) groupLog({ namespace: `-webWorkersInstance: ${label}`, items: msgs || [] })
   }
@@ -158,7 +144,6 @@ class Singleton {
         this.workers[wName].onmessageerror = cb.bind(this)
         break
       case typeof SharedWorker !== 'undefined' && this.workers[wName] instanceof SharedWorker:
-        // _c++
         this.workers[wName].port.onmessageerror = cb.bind(this)
         break
       default:
@@ -192,7 +177,7 @@ class Singleton {
 
   public terminate({ wName, cb }: {
     wName: string;
-    cb?: (d: any) => void;
+    cb?: (d: unknown) => void;
   }) {
     // if (!this.workers[wName]) throw new Error(`No worker ${wName} yet #4`)
     if (!this.workers[wName]) return
@@ -216,7 +201,9 @@ class Singleton {
   }): void {
     if (!this.workers[wName]) throw new Error(`No worker ${wName} yet #5`)
 
-    this.post<{ tsList: TTsListItem[] }>({
+    this.post<{
+      tsList: TTsListItem[];
+    }>({
       wName,
       eType: NWService.EClientToWorkerEvent.RESET_WORKER_HISTORY,
     })
@@ -230,5 +217,3 @@ export const wws = Singleton.getInstance({
   noSharedWorkers: true,
   isDebugEnabled: true,
 })
-
-// export type WWSSingleton = Singleton['activeIncomingChannels']
