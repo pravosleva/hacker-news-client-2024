@@ -15,7 +15,7 @@ type TProps = {
   children: React.ReactNode;
 }
 
-export const TopLevelLogic = ({ children }: TProps) => {
+export const MainNewsListUpdateLogic = ({ children }: TProps) => {
   const dispatch = useDispatch()
   const handleEachResponse = useCallback(({ data }: {
     data: NResponse.TMinimalStandart<number[]>;
