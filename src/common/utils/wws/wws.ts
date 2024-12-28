@@ -40,13 +40,19 @@ class Singleton {
   public setActiveIncomingChannels({ wName, value }: {
     wName: string;
     value: number;
-  }): Promise<{ ok: boolean; message?: string; }> {
+  }): Promise<{
+    ok: boolean;
+    message?: string;
+  }> {
     this.activeIncomingChannels[wName] = value
     return Promise.resolve({ ok: true })
   }
   private initWorker({ wName }: {
     wName: string;
-  }): Promise<{ ok: boolean; message?: string; }> {
+  }): Promise<{
+    ok: boolean;
+    message?: string;
+  }> {
     const result: { ok: boolean; message?: string; } = { ok: true }
 
     const firstWord = getSplittedCamelCase(wName)[0]
@@ -70,7 +76,7 @@ class Singleton {
       }
       return Promise.resolve(result)
     } catch (_err: unknown) {
-      this.workers.newsWorker = new Worker(`${PUBLIC_URL}/workers/news.dedicated-worker.js?v=${packageJson.version}&ts=${new Date().getTime()}`)
+      this.workers.newsWorker = new Worker(`${PUBLIC_URL}/workers/${firstWord}/dedicated-worker.js?v=${packageJson.version}&ts=${new Date().getTime()}`)
       return Promise.reject(result)
     }
   }
