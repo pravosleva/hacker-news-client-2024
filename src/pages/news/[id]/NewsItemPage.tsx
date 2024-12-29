@@ -219,6 +219,7 @@ export const NewsItemPage = memo(() => {
           typeof id === 'string' && !!id && (
             <Button
               variant='outlined'
+              color={!!itemErrorInfo ? 'error' : 'primary'}
               onClick={handleClickUpdateComments}
               size='small'
             >
@@ -235,6 +236,7 @@ export const NewsItemPage = memo(() => {
               size='small'
               startIcon={<BookmarkRemoveIcon />}
               onClick={removeFromFavorites({ id: Number(id) })}
+              color='error'
             >
               Unfav
             </Button>

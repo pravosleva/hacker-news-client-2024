@@ -53,9 +53,10 @@ export const HomePage = memo(() => {
   ), [items.length, infoText, loadedTagetCounter])
 
   const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
-  const ErrorChip = useMemo(() => mainResponseResult?.ok === false && !!mainResponseResult.message && (
-    <Chip className={baseClasses.truncate} label={mainResponseResult.message} size='small' color='error' />
-  ), [mainResponseResult])
+  const isMainReuestErrored = useMemo(() => mainResponseResult?.ok === false && !!mainResponseResult.message, [mainResponseResult?.ok, mainResponseResult?.message])
+  const ErrorChip = useMemo(() => isMainReuestErrored && (
+    <Chip className={baseClasses.truncate} label={mainResponseResult?.message} size='small' color='error' />
+  ), [mainResponseResult?.message, isMainReuestErrored])
 
   return (
     <Layout>
@@ -119,7 +120,12 @@ export const HomePage = memo(() => {
       >
         <Button
           variant={loadedTagetCounter > items.length ? 'contained' : 'outlined'}
-          color={loadedTagetCounter > items.length ? 'success' : 'primary'}
+          color={
+            isMainReuestErrored
+            ? 'error'
+            : loadedTagetCounter > items.length
+              ? 'success'
+              : 'primary'}
           onClick={handleClick}
           size='small'
         >
