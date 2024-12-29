@@ -1,5 +1,5 @@
 import { createFastContext } from '~/common/context/utils'
-import { useMemo, useLayoutEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { TStore } from '~/common/store'
 import { documentTitleBadger } from '~/common/utils/documentTitleBadger'
@@ -18,7 +18,7 @@ export const DocumentTitleUpdateLogic = ({ children }: TProps) => {
   const loadedTagetCounter = useMemo(() => loadedCounters[newsMode], [loadedCounters, newsMode])
   const deltaCouter = useMemo(() => loadedTagetCounter - items.length, [loadedTagetCounter, items.length])
   
-  useLayoutEffect(() => {
+  useEffect(() => {
     let newTitle
     switch (true) {
       case deltaCouter > 0:

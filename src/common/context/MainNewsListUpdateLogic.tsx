@@ -25,10 +25,12 @@ export const MainNewsListUpdateLogic = ({ children }: TProps) => {
   const items = useSelector((s: TStore) => s.news.items)
   const newsMode = useSelector((s: TStore) => s.news.newsMode)
   const mainPollingKey = useSelector((s: TStore) => s.news.pollingCounter)
+
   // NOTE: For unwelcome events ignore
   useLayoutEffect(() => {
     wws.setActiveIncomingChannels({ wName: 'newsWorker', value: mainPollingKey })
   }, [mainPollingKey])
+
   useWorkers({
     isDebugEnabled: false,
     cb: {
@@ -40,6 +42,7 @@ export const MainNewsListUpdateLogic = ({ children }: TProps) => {
       mainPollingKey,
     },
   })
+  
   const persistedFavorites = useSelector((s: TStore) => s.news.persistedFavorites)
   const targetPromise = useCallback((): Promise<NResponse.TMinimalStandart<number[]>> => {
     switch (newsMode) {
