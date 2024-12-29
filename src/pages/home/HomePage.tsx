@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom'
 import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { TStore } from '~/common/store'
 import clsx from 'clsx'
+import { TimeAgo } from '~/common/components/TimeAgo'
 
 const BRAND_NAME = import.meta.env.VITE_BRAND_NAME
 
@@ -28,21 +29,26 @@ export const HomePage = memo(() => {
   const handleChangeNewsMode = useCallback((e: SelectChangeEvent<ENewsMode>) => {
     dispatch(setNewsMode({ mode: (e.target.value as ENewsMode) }))
   }, [dispatch])
+  const lastUpdateTsNewsList = useSelector((s: TStore) => s.news.lastUpdateTs)
 
   const items = useSelector((s: TStore) => s.news.items)
   const loadedCounters = useSelector((s: TStore) => s.news.loadedItemsCounters)
   const loadedTagetCounter = useMemo(() => loadedCounters[newsMode], [loadedCounters, newsMode])
-  const infoText = useMemo(() => loadedTagetCounter > items.length
-    ? `+${loadedTagetCounter - items.length} since last update`
-    : `${loadedTagetCounter} of ${items.length}`,
-    [loadedTagetCounter, items.length])
+  const infoText = useMemo(() => {
+    switch (true) {
+      case loadedTagetCounter > items.length:
+        return `+${loadedTagetCounter - items.length} since last update`
+      default:
+        return `${loadedTagetCounter} of ${items.length}`
+    }
+  }, [loadedTagetCounter, items.length])
 
   const InfoChip = useMemo(() => items.length > 0 && (
     <Chip
       className={baseClasses.truncate}
       label={infoText}
       size='small'
-      color={loadedTagetCounter > items.length ? 'info' : 'default'}
+      color={loadedTagetCounter > items.length ? 'success' : 'default'}
     />
   ), [items.length, infoText, loadedTagetCounter])
 
@@ -112,7 +118,8 @@ export const HomePage = memo(() => {
         }}
       >
         <Button
-          variant='outlined'
+          variant={loadedTagetCounter > items.length ? 'contained' : 'outlined'}
+          color={loadedTagetCounter > items.length ? 'success' : 'primary'}
           onClick={handleClick}
           size='small'
         >
@@ -134,6 +141,10 @@ export const HomePage = memo(() => {
             {Object.values(ENewsMode).map((str) => <MenuItem key={str} value={str}>{uiDict[str]}</MenuItem>)}
           </Select>
         </FormControl>
+        <TimeAgo
+          date={lastUpdateTsNewsList}
+          prefix='List refreshed'
+        />
       </div>
     </Layout>
   )

@@ -34,6 +34,7 @@ export const uiDict: {
 }
 export type TNewsState = {
   newsMode: ENewsMode;
+  lastUpdateTs: number;
   loadedItemsCounters: {
     [key in ENewsMode]: number;
   };

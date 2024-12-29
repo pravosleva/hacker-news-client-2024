@@ -224,7 +224,7 @@ export const documentTitleBadger = Badger.getInstance({
   options: {
     backgroundColor: "#f00",
     color: '#fff',
-    scale: 0.7, // 0..1 (Scale in respect to the favicon image size)
+    scale: 0.6, // 0..1 (Scale in respect to the favicon image size)
     position: 'ne', // Position inside favicon
     radius: 8, // Border radius
     src: `${PUBLIC_URL}/vite.svg`, // Favicon source (dafaults to the <link> icon href)

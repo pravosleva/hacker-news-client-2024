@@ -7,6 +7,7 @@ import { compareDESC } from '~/common/utils/number-ops'
 // Define the initial state for the slice
 const initialState: TNewsState = {
   newsMode: ENewsMode.NEW,
+  lastUpdateTs: new Date().getTime(),
   items: [],
   details: {},
   mainRequestResult: undefined,
@@ -55,17 +56,27 @@ const newsSlice = createSlice({
       state.mainRequestResult = action.payload.result
       if (Array.isArray(action.payload.result.targetResponse)) {
         // NOTE: (v1) Хотя, проверка на массив чисел уже была пройдена
-        // state.items = action.payload.result.targetResponse
+        // state.items = [...action.payload.result.targetResponse]
 
         // NOTE: (v2) По ТЗ требуется оставить последние 100, предварительно отсортировав
         const uiLimit = 100
         const sortedIds = [...action.payload.result.targetResponse].sort(compareDESC)
-        const someLast = []
-        for (let i = 0, max = uiLimit; i < max; i++) {
-          if (!sortedIds[i]) break
-          someLast.push(sortedIds[i])
+        switch (state.newsMode) {
+          case ENewsMode.FAV:
+            // NOTE: Не для избранных заметок
+            state.items = sortedIds
+            break
+          default: {
+            const someLast = []
+            for (let i = 0, max = uiLimit; i < max; i++) {
+              if (!sortedIds[i]) break
+              someLast.push(sortedIds[i])
+            }
+            state.items = someLast
+            break
+          }
         }
-        state.items = someLast
+        state.lastUpdateTs = new Date().getTime()
       }
     },
     resetMainRequestResult: (state) => {
