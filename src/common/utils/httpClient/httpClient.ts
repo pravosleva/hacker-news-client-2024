@@ -1,6 +1,7 @@
 import axios, { CancelTokenSource } from 'axios'
 import { API, TAPIProps } from './API'
-import { ENewsMode, TNewsItemDetails } from '~/common/store/reducers/newsSlice/types'
+import { ENewsMode, TMetaCacheSample, TNewsItemDetails } from '~/common/store/reducers/newsSlice/types'
+import { NResponse } from './types'
 
 const VITE_BASE_API_URL = import.meta.env.VITE_BASE_API_URL
 
@@ -64,6 +65,51 @@ class Singleton extends API {
         return Promise.resolve(data)
       default:
         return data.ok ? Promise.resolve(data) : Promise.reject(data)
+    }
+  }
+
+  async getNewsItemMeta({ externalUrl }: {
+    externalUrl: string;
+  }): Promise<NResponse.TMinimalStandart<TMetaCacheSample>> {
+    if (!externalUrl) return Promise.reject({ ok: false, message: 'Incorrect param externalUrl.' })
+
+    try {
+      const data = await axios.get(
+        `https://pravosleva.pro/express-helper/url-metadata/editorjs?url=${encodeURI(externalUrl)}`)
+      
+      /* NOTE: ERR sample
+      {
+        "success": 0,
+        "error": {
+          "code": "ECONNRESET",
+          "path": null,
+          "host": "twitter.com",
+          "port": 443
+        }
+      }
+      */
+      switch (true) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        case !!(data?.data as { success: 0 | 1; meta?: TMetaCacheSample; error: string | {[key: string]: any}; }).meta:
+          return Promise.resolve({
+            ok: true,
+            targetResponse: data.data,
+          })
+        default:
+          return Promise.reject({
+            ok: false,
+            message: `Incorrect response with status ${data.statusText}`,
+            targetResponse: data.data,
+          })
+      }
+    } catch (err) {
+      return Promise.reject({
+        ok: false,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        message: err?.message || 'No err.message',
+        // targetResponse: err,
+      })
     }
   }
 }

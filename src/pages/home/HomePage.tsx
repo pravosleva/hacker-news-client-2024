@@ -16,6 +16,7 @@ import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { TStore } from '~/common/store'
 import clsx from 'clsx'
 import { TimeAgo } from '~/common/components/TimeAgo'
+// import { useStore as useMainCtx } from '~/common/context/MainNewsListUpdateLogic'
 
 const BRAND_NAME = import.meta.env.VITE_BRAND_NAME
 
@@ -49,13 +50,25 @@ export const HomePage = memo(() => {
       label={infoText}
       size='small'
       color={loadedTagetCounter > items.length ? 'success' : 'default'}
+      onClick={() => {
+        window.alert(infoText)
+      }}
     />
   ), [items.length, infoText, loadedTagetCounter])
 
   const mainResponseResult = useSelector((s: TStore) => s.news.mainRequestResult)
   const isMainReuestErrored = useMemo(() => mainResponseResult?.ok === false && !!mainResponseResult.message, [mainResponseResult?.ok, mainResponseResult?.message])
   const ErrorChip = useMemo(() => isMainReuestErrored && (
-    <Chip className={baseClasses.truncate} label={mainResponseResult?.message} size='small' color='error' />
+    <Chip
+      className={baseClasses.truncate}
+      label={mainResponseResult?.message}
+      size='small'
+      color='error'
+      onClick={() => {
+        if (!!mainResponseResult?.message)
+          window.alert(mainResponseResult.message)
+      }}
+    />
   ), [mainResponseResult?.message, isMainReuestErrored])
 
   return (

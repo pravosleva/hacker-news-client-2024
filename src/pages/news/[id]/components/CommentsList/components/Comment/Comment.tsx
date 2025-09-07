@@ -116,14 +116,34 @@ export const Comment = memo(({ id, level, autoLoad }: TProps) => {
 
               {
                 itemData?.deleted && (
-                  <div className={baseClasses.stack1}>
-                    <Alert
-                      variant='filled'
-                      severity='warning'
+                  // <div className={baseClasses.stack1}>
+                  //   <Alert
+                  //     variant='filled'
+                  //     severity='warning'
+                  //   >
+                  //     DELETED
+                  //   </Alert>
+                  //   <pre className={baseClasses.preNormalized}>
+                  //     {JSON.stringify(itemData, null, 2)}
+                  //   </pre>
+                  // </div>
+                  <div className={baseClasses.stack0}>
+                    <div
+                      style={{
+                        borderRadius: '8px 8px 0px 0px',
+                        borderBottom: '1px solid lightgray',
+                        padding: '8px',
+                        backgroundColor: 'hsla(0, 0%, 0%, 0.04)',
+                        fontWeight: 'bold',
+                      }}
+                    >DELETED</div>
+                    <pre
+                      className={baseClasses.preNormalized}
+                      style={{
+                        borderTopLeftRadius: '0px',
+                        borderTopRightRadius: '0px',
+                      }}
                     >
-                      DELETED
-                    </Alert>
-                    <pre className={baseClasses.preNormalized}>
                       {JSON.stringify(itemData, null, 2)}
                     </pre>
                   </div>

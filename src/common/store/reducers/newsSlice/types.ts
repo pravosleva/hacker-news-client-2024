@@ -1,3 +1,5 @@
+import { TLocalStorageUsageInfo } from "~/common/utils/object-ops";
+
 export type TNewsItemDetails = {
   by: string;
   id: number;
@@ -32,6 +34,12 @@ export const uiDict: {
   [ENewsMode.TOP]: 'top',
   [ENewsMode.FAV]: 'favorites',
 }
+export type TMetaCacheSample = {
+  url?: string;
+  image?: string;
+  title?: string;
+  description?: string;
+}
 export type TNewsState = {
   newsMode: ENewsMode;
   lastUpdateTs: number;
@@ -51,4 +59,15 @@ export type TNewsState = {
   } | undefined;
   pollingCounter: number;
   persistedFavorites: number[];
+  metaCache: {
+    [key: string]: {
+      ts: number;
+      meta?: TMetaCacheSample;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      error?: string | { [key: string]: any };
+    };
+  };
+  lsUsageInfo: {
+    meta: string;
+  }
 }

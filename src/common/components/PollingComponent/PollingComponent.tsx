@@ -44,7 +44,11 @@ export function PollingComponent<TExpectedResult>({
       .catch((err: unknown) => {
         switch (true) {
           case err instanceof Error:
-            setLastResponse({ ok: false, message: err?.message, targetResponse: undefined })
+            setLastResponse({
+              ok: false,
+              message: err?.message,
+              targetResponse: undefined,
+            })
             break
           case typeof (err as NResponse.TMinimalStandart<TExpectedResult>)?.message === 'string': {
             const errCopy = err as NResponse.TMinimalStandart<TExpectedResult>

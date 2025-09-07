@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 export namespace NWService {
   export enum EClientToWorkerEvent {
     DIE_WORKER = 'c-w:die-worker',

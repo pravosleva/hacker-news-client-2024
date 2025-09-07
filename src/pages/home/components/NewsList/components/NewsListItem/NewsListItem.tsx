@@ -15,7 +15,6 @@ type TProps = {
 export const NewsListItem = memo(({ newsItemId, isNew }: TProps) => {
   const details = useSelector((s: TStore) => s.news.details)
   const itemData = useMemo<TNewsItemDetails | undefined>(() => details[String(newsItemId)], [details, newsItemId])
-
   const errors = useSelector((s: TStore) => s.news.errors)
   const itemErrorInfo = useMemo<string | undefined>(() => errors[String(newsItemId)], [errors, newsItemId])
 
@@ -32,6 +31,7 @@ export const NewsListItem = memo(({ newsItemId, isNew }: TProps) => {
             errorMessage={itemErrorInfo}
             localLink={`/news/${itemData.id}`}
             isNew={isNew}
+            externalUrl={itemData?.url}
           />
         )
       case !!itemErrorInfo:
@@ -43,6 +43,7 @@ export const NewsListItem = memo(({ newsItemId, isNew }: TProps) => {
             {`#${newsItemId} ERRORED:`} {itemErrorInfo}
           </Alert>
         )
+        // throw new Error(`#${newsItemId} ERRORED: {itemErrorInfo}`)
       default:
         return (
           <Skeleton animation='wave' />

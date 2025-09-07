@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useMemo, useCallback, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
@@ -8,9 +9,9 @@ import { Box, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { Alert, Skeleton } from '@mui/material'
-import { PollingComponent } from '~/common/components'
+import { PollingComponent, WebShare } from '~/common/components'
 import { NResponse, httpClient } from '~/common/utils/httpClient'
-import { setNewsItemData, setNewsItemError, TNewsItemDetails, resetNewsItemData, addToPersistedFavorites, removeFromPersistedFavorites } from '~/common/store/reducers'
+import { setNewsItemData, setNewsItemError, TNewsItemDetails, resetNewsItemData, addToPersistedFavorites, removeFromPersistedFavorites, TMetaCacheSample } from '~/common/store/reducers'
 import { CommentsList } from './components'
 import { compareDESC } from '~/common/utils/number-ops'
 import RefreshIcon from '@mui/icons-material/Refresh'
@@ -21,6 +22,10 @@ import clsx from 'clsx'
 import layoutClasses from '~/common/components/Layout/Layout.module.scss'
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove'
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd'
+import { addMetaCache } from '~/common/store/reducers'
+import CircularProgress from '@mui/material/CircularProgress'
+
+const PUBLIC_URL = `https://pravosleva.pro${import.meta.env.VITE_PUBLIC_URL || ''}`
 
 export const NewsItemPage = memo(() => {
   const { id } = useParams()
@@ -73,6 +78,18 @@ export const NewsItemPage = memo(() => {
     : undefined,
     [dispatch]
   )
+
+  const getMetaPromise = useCallback(() => {
+    return httpClient.getNewsItemMeta({ externalUrl: itemData?.url || '' })
+  },
+  [itemData?.url])
+  const metaCache = useSelector((s: TStore) => s.news.metaCache)
+  const targetMeta = useMemo(() => !!itemData?.url ? metaCache[itemData.url]?.meta : null, [itemData?.url, metaCache])
+  
+  const [metaErr, setMetaErr] = useState<any>(null)
+  const handleSetErr = useCallback((ps: any) => {
+    if (ps?.success !== 1) setMetaErr(ps)
+  }, [])
 
   return (
     <Layout>
@@ -149,14 +166,82 @@ export const NewsItemPage = memo(() => {
             />
           )
         }
+
         {
-          !!itemData?.url && (
-            <a
-              href={itemData?.url}
-              target='_blank'
-            >{itemData?.url}</a>
+          (!!targetMeta?.image && !!targetMeta?.url)
+          ? (
+            <div
+              className={classes.wrapperBg}
+              style={{
+                backgroundImage: `url("${targetMeta.image}")`,
+                borderRadius: '16px',
+              }}
+            >
+              <a
+                className={classes.content}
+                target='_blank'
+                href={targetMeta.url}
+                style={{
+                  width: '100%',
+                  padding: '32px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
+                  textDecoration: 'none',
+                }}
+              >
+                <span
+                  style={{ fontWeight: 'bold', textDecoration: 'underline', }}
+                  className={classes.title}
+                >{targetMeta.title || targetMeta.url}</span>
+                {!!targetMeta.description && (
+                  <span
+                    className={classes.descr}
+                    style={{ textDecoration: 'none' }}
+                  >{targetMeta.description}</span>
+                )}
+              </a>
+            </div>
+          )
+          : !!itemData?.url && !targetMeta && !metaErr
+            ? (
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </div>
+            )
+            : !!itemData?.url && (
+              <a
+                href={itemData?.url}
+                target='_blank'
+              >{itemData?.url}</a>
+            )
+        }
+
+        {
+          !!metaErr && (
+            <div className={baseClasses.stack0}>
+              <div
+                style={{
+                  borderRadius: '8px 8px 0px 0px',
+                  borderBottom: '1px solid lightgray',
+                  padding: '8px',
+                  backgroundColor: 'hsla(0, 0%, 0%, 0.04)',
+                  fontWeight: 'bold',
+                }}
+              >Meta data errored</div>
+              <pre
+                className={baseClasses.preNormalized}
+                style={{
+                  borderTopLeftRadius: '0px',
+                  borderTopRightRadius: '0px',
+                }}
+              >
+                {JSON.stringify(metaErr, null, 2)}
+              </pre>
+            </div>
           )
         }
+
         {
           !!itemData && (
             <>
@@ -194,6 +279,37 @@ export const NewsItemPage = memo(() => {
           delay={60 * 1000}
           // isDebugEnabled
         />
+
+        {
+          !!itemData?.url && !targetMeta && (
+            <PollingComponent<{
+              success: 0|1;
+              meta: TMetaCacheSample;
+               
+              error: string | {[key: string]: any};
+            }>
+              key={itemData.url}
+              resValidator={(data) => data.targetResponse?.success === 1}
+              onEachResponse={({ data }) => {
+                handleSetErr(data)
+              }}
+              onSuccess={({ data }) => {
+                // console.info(data)
+                if (
+                  data.targetResponse?.success === 1
+                  && !!data.targetResponse?.meta
+                ) {
+                  dispatch(addMetaCache({ meta: data.targetResponse.meta, newsItemUrl: itemData.url }))
+                }
+              }}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              promise={getMetaPromise}
+              delay={10 * 60 * 1000}
+              // isDebugEnabled
+            />
+          )
+        }
       </div>
 
       <div
@@ -249,6 +365,16 @@ export const NewsItemPage = memo(() => {
             >
               Fav
             </Button>
+          )
+        }
+        {
+          !!itemData?.title && (
+            <WebShare
+              // url={itemData.url || `${PUBLIC_URL}/#/news/${id}`}
+              url={`${PUBLIC_URL}/#/news/${id}`}
+              title={itemData.title}
+              text={clsx('Hacker News', '|', itemData.by && `by ${itemData.by} 👉`, itemData.title)}
+            />
           )
         }
       </div>

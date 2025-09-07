@@ -19,13 +19,17 @@ export const NewsList = memo(() => {
     ? loadedTagetCounter - items.length
     : 0,
     [loadedTagetCounter, items.length])
-
-  return (
-    <div className={baseClasses.stack2}>
-      {
-        items.length > 0
-        ? items?.map((id, i) => <NewsListItem key={String(id)} newsItemId={id} isNew={newSinceLastUpdateCounter > 0 ? newSinceLastUpdateCounter > i : false} />)
-        : (
+  const MemoizedItems = useMemo(() => {
+    // const isNew = newSinceLastUpdateCounter > 0 ? newSinceLastUpdateCounter > items.length - 1 : false
+    return (
+      items.length > 0
+        ? items?.map((id, i) => (
+          <NewsListItem
+            key={String(id)}
+            newsItemId={id}
+            isNew={newSinceLastUpdateCounter > i}
+          />
+        )) : (
           <Alert
             variant='outlined'
             severity='info'
@@ -33,7 +37,12 @@ export const NewsList = memo(() => {
             No items yet
           </Alert>
         )
-      }
+    )
+  }, [items, newSinceLastUpdateCounter])
+  
+  return (
+    <div className={baseClasses.stack2}>
+      {MemoizedItems}
     </div>
   )
 })

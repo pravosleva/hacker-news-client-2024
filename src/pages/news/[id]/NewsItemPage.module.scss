@@ -17,3 +17,73 @@
     font-size: small;
   }
 }
+
+.wrapperBg {
+  width: 100%;
+  // cursor: pointer;
+  position: relative;
+
+  // &:disabled {
+  //   opacity: 0.5;
+  //   cursor: not-allowed;
+  // }
+
+  // background-image: url(&quot;/static/img/blog/coming-soon-v3.jpg&quot;);
+  // filter: grayscale(100%);
+  // opacity: 0.5;
+  // font-family: system-ui;
+  object-fit: cover;
+  // border-radius: 16px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: ease 0.5s all;
+
+  // &:hover>.content,
+  // &:focus>.content,
+  // &:active>.content {
+  //   background: linear-gradient(rgba(0, 0, 0, 0.7) 30%,
+  //       rgba(74, 222, 128, 0.6) 100%);
+
+  //   filter: brightness(1.3);
+  // }
+
+  .content {
+    // transition: all 0.2s ease;
+    // background: linear-gradient(rgba(1, 98, 200, 0.9) 30%,
+    //     rgba(1, 98, 200, 0.65) 60%,
+    //     rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(rgba(0, 0, 0, 0.7) 30%,
+      rgba(249, 115, 22, 0.6) 100%);
+
+    max-width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    // background-image: '';
+    // padding: 16px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+
+    .title {
+      font-weight: bold;
+
+      white-space: pre-wrap;
+      /* Since CSS 2.1 */
+      white-space: -moz-pre-wrap;
+      /* Mozilla, since 1999 */
+      white-space: -pre-wrap;
+      /* Opera 4-6 */
+      white-space: -o-pre-wrap;
+      /* Opera 7 */
+      word-wrap: break-word;
+      /* Internet Explorer 5.5+ */
+    }
+
+    .descr {
+      text-decoration: none;
+      font-size: small;
+      margin-top: auto;
+    }
+  }
+}

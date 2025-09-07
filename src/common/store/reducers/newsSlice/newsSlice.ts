@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { TNewsState, TNewsItemDetails, ENewsMode } from './types'
+import { TNewsState, TNewsItemDetails, ENewsMode, TMetaCacheSample } from './types'
 import { NResponse } from '~/common/utils/httpClient/types'
 import { NWService } from '~/common/utils/wws/types';
-import { compareDESC } from '~/common/utils/number-ops'
+import { compareDESC, getHumanReadableSize } from '~/common/utils/number-ops'
+// import { getLocalStorageSpace } from '~/common/utils/object-ops';
+import jsonSize from 'json-size'
 
 // Define the initial state for the slice
 const initialState: TNewsState = {
@@ -23,6 +25,11 @@ const initialState: TNewsState = {
     [ENewsMode.FAV]: 0,
   },
   persistedFavorites: [],
+  metaCache: {},
+  // localStorageUsageInfo: getLocalStorageSpace({ getText: ({ bytes }) => `Total size: ${bytes} B` }),
+  lsUsageInfo: {
+    meta: '',
+  },
 };
 
 // Create the slice
@@ -31,6 +38,7 @@ const newsSlice = createSlice({
   initialState,
   reducers: {
     setNewsItemData: (state, action: PayloadAction<NWService.TNewsItemDataResult<TNewsItemDetails>>) => {
+      // console.log(action.payload.originalResponse)
       switch (true) {
         case typeof action.payload.originalResponse?.id === 'number':
           if (
@@ -44,22 +52,26 @@ const newsSlice = createSlice({
           // NOTE: Remove error message if exists
           if (!!state.errors[String(action.payload.originalResponse.id)])
             delete state.errors[String(action.payload.originalResponse.id)]
+
+          // state.localStorageUsageInfo = getLocalStorageSpace({
+          //   getText: ({ bytes }) => `Total ${bytes} B`
+          // })
           break
         default:
           break
-      } 
+      }
     },
     setNewsItemError: (state, action: PayloadAction<{ id: number; reason: string; }>) => {
       state.errors[String(action.payload.id)] = action.payload.reason
     },
-    setMainRequestResult: (state, action: PayloadAction<{ result: NResponse.TMinimalStandart<number[]>}>) => {
+    setMainRequestResult: (state, action: PayloadAction<{ result: NResponse.TMinimalStandart<number[]> }>) => {
       state.mainRequestResult = action.payload.result
       if (Array.isArray(action.payload.result.targetResponse)) {
         // NOTE: (v1) Хотя, проверка на массив чисел уже была пройдена
         // state.items = [...action.payload.result.targetResponse]
 
         // NOTE: (v2) По ТЗ требуется оставить последние 100, предварительно отсортировав
-        const uiLimit = 100
+        const uiLimit = 1000000
         const sortedIds = [...action.payload.result.targetResponse].sort(compareDESC)
         switch (state.newsMode) {
           case ENewsMode.FAV:
@@ -85,11 +97,17 @@ const newsSlice = createSlice({
       // state.loadedItemsCounters[state.newsMode] = 0
     },
     refreshPolling: (state) => {
-      for (const key in state.details) delete state.details[key]
-      state.items = []
-      state.errors = {}
-      state.loadedItemsCounters[state.newsMode] = 0
-      state.pollingCounter += 1
+      if (!document.hidden) {
+        for (const key in state.details) delete state.details[key]
+        state.items = []
+        state.errors = {}
+        state.loadedItemsCounters[state.newsMode] = 0
+        state.pollingCounter += 1
+      } else
+        state.mainRequestResult = {
+          ok: false,
+          message: 'Refresh procedure skiped'
+        }
     },
     resetNewsItemData: (state, action: PayloadAction<{ id: number; }>) => {
       if (state.details[String(action.payload.id)]) state.loadedItemsCounters[state.newsMode] -= 1
@@ -130,6 +148,35 @@ const newsSlice = createSlice({
         state.pollingCounter += 1
       }
     },
+    addMetaCache: (state, action: PayloadAction<{
+      newsItemUrl: string;
+      meta?: TMetaCacheSample;
+    }>) => {
+      try {
+        const limitMB = 1
+        if (jsonSize(state.metaCache) > limitMB * 1024 * 1024)
+          state.metaCache = {}
+      } catch (err) {
+        console.warn('Cleanup local memory error!')
+        console.warn(err)
+      }
+
+      const ts = new Date().getTime()
+      state.metaCache[action.payload.newsItemUrl] = {
+        ts,
+        meta: action.payload.meta,
+      }
+      // state.localStorageUsageInfo = getLocalStorageSpace({
+      //   theFieldNames: 
+      //   getText: ({ bytes }) => `Total ${(bytes/1000).toFixed(2)} KB`
+      // })
+      try {
+        state.lsUsageInfo.meta = `Meta data local size ${getHumanReadableSize({ bytes: jsonSize(state.metaCache), decimals: 2 })}`
+      } catch (err) {
+        console.warn('Local memory update error!')
+        console.warn(err)
+      }
+    },
   },
 });
 
@@ -147,4 +194,5 @@ export const {
   resetNewsItemData,
   addToPersistedFavorites,
   removeFromPersistedFavorites,
+  addMetaCache,
 } = newsSlice.actions

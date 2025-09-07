@@ -7,15 +7,16 @@ const isTsActual = ({ limit, ts }) => {
 }
 
 const cache = new Map() // NOTE: nNewsItemId => { ts, data }
-const getNewsItemFromCache = ({ nNewsItemId, tsLimit = 1 * 1000 }) => {
+const getNewsItemFromCache = ({ nNewsItemId, tsLimit = 10 * 1000 }) => {
+  // NOTE: 10 seconds in cache
   const res = {
     ok: false,
     data: null,
   }
-  const personInfo = cache.get(nNewsItemId)
-  if (!!personInfo && !!personInfo.ts && isTsActual({ limit: tsLimit, ts: personInfo.ts })) {
+  const cachedNewsItemData = cache.get(nNewsItemId)
+  if (!!cachedNewsItemData && !!cachedNewsItemData.ts && isTsActual({ limit: tsLimit, ts: cachedNewsItemData.ts })) {
     res.ok = true
-    res.data = personInfo.data
+    res.data = cachedNewsItemData.data
   }
   return res
 }
@@ -78,6 +79,7 @@ const withNewsService = async ({
                 }
                 
                 controllers[String(eventData?.input?.dataPackKey)] = new AbortController()
+                controllers[`meta_${eventData?.input?.dataPackKey}`] = new AbortController()
                 break
               default:
                 // NOTE: Go on...
@@ -93,7 +95,7 @@ const withNewsService = async ({
             } else {
               output = await fetchRetry({
                 url: `${baseApiUrl}/item/${id}.json?print=pretty`,
-                delay: 2 * 1000,
+                delay: 1 * 1000,
                 tries: 2,
                 nativeFetchOptions: {
                   method: 'GET',
@@ -205,11 +207,14 @@ const withNewsService = async ({
                       },
                     },
                   })
+                  // -- NOTE: meta
+
+                  // --
                   switch (true) {
                     case !eventValidationResult.ok:
                       return {
                         ok: false,
-                        message: `ERR1: Incorrect data for #${id}. ${eventValidationResult.reason}`,
+                        message: `ERR1: Incorrect data. ${eventValidationResult.reason}`,
                         data: result,
                       }
                     default:
@@ -220,6 +225,62 @@ const withNewsService = async ({
                       }
                   }
                 })
+                // .then(async (result) => {
+                //   switch (true) {
+                //     case typeof result?.data?.url === 'string' && !!result.data.url: {
+                //       try {
+                //         const metaOutput = await fetchRetry({
+                //           url: `https://pravosleva.pro/express-helper/url-metadata/editorjs?url=${encodeURI(result.data.url)}`,
+                //           delay: 2 * 1000,
+                //           tries: 1,
+                //           nativeFetchOptions: {
+                //             method: 'GET',
+                //             // headers: { 'Content-Type': 'application/json' },
+                //             // body: JSON.stringify({ nNewsItemId: id }),
+                //             // signal: abortController.signal,
+                //             signal: controllers[`meta_${eventData?.input?.dataPackKey}`].signal
+                //           },
+                //           cb: {
+                //             onEachAttempt: ({ __triesLeft, tries, url }) => {
+                //               // if (debugConfig.workerEvs.mwsInternalLogs.isEnabled) log({
+                //               //   label: `META: #${_c} onEachAttempt: ${tries - __triesLeft + 1} of ${tries}`,
+                //               //   msgs: [id, url],
+                //               // })
+                //             },
+                //             onFinalError: (arg) => {
+                //               /// const { __triesLeft, tries, url, err } = arg
+                //               if (debugConfig.api.responseByServer.isEnabled) console.log(arg)
+          
+                //               // try {
+                //               //   cb[eventData?.input?.opsEventType]({
+                //               //     output: metaOutput,
+                //               //     _service: {
+                //               //       id,
+                //               //       counters: {
+                //               //         current: _c,
+                //               //         total: _total,
+                //               //       },
+                //               //       ...arg,
+                //               //     },
+                //               //   })
+                //               // } catch (err) {
+                //               //   console.log(err)
+                //               // }
+                //             },
+                //           },
+                //         })
+                //         if (metaOutput?.success === 1)
+                //           result.data._metaService = metaOutput
+                //       } catch (err) {
+                //         console.log(err)
+                //       }
+                //       break
+                //     }
+                //     default:
+                //       break
+                //   }
+                //   return result
+                // })
                 .catch((err) => {
                   return {
                     ok: false,
@@ -228,7 +289,10 @@ const withNewsService = async ({
                   }
                 })
 
-              if (!!output && output.ok) cache.set(id, { ts: new Date().getTime(), data: output })
+              if (!!output && output.ok) {
+                cache.set(id, { ts: new Date().getTime(), data: output })
+                setTimeout(() => cache.delete(id), 45 * 1000)
+              }
             }
 
             _c += 1

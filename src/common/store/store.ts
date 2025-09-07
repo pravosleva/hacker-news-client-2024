@@ -18,7 +18,7 @@ import { newsReducer } from './reducers/newsSlice'
 const persistNewsConfig = {
   key: 'news',
   storage,
-  whitelist: ['persistedFavorites']
+  whitelist: ['persistedFavorites', 'metaCache']
 }
 
 const rootReducer = combineReducers({
