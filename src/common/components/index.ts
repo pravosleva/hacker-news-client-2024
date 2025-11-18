@@ -1,3 +1,4 @@
+export * from './AbstractedPager'
 export * from './Countdown'
 export * from './ErrorFallback'
 export * from './Layout'

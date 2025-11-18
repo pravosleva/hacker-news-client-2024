@@ -1,1 +1,1 @@
-export * from './NewsList'
+export * from './NewsList/v2'
