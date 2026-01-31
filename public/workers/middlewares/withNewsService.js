@@ -77,7 +77,7 @@ const withNewsService = async ({
                   delete controllers[key]
                   // controllers[String(eventData?.input?.dataPackKey)].abort()
                 }
-                
+
                 controllers[String(eventData?.input?.dataPackKey)] = new AbortController()
                 controllers[`meta_${eventData?.input?.dataPackKey}`] = new AbortController()
                 break
@@ -95,7 +95,7 @@ const withNewsService = async ({
             } else {
               output = await fetchRetry({
                 url: `${baseApiUrl}/item/${id}.json?print=pretty`,
-                delay: 1 * 1000,
+                // delay: 1 * 1000,
                 tries: 2,
                 nativeFetchOptions: {
                   method: 'GET',
@@ -250,7 +250,7 @@ const withNewsService = async ({
                 //             onFinalError: (arg) => {
                 //               /// const { __triesLeft, tries, url, err } = arg
                 //               if (debugConfig.api.responseByServer.isEnabled) console.log(arg)
-          
+
                 //               // try {
                 //               //   cb[eventData?.input?.opsEventType]({
                 //               //     output: metaOutput,

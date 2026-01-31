@@ -4,7 +4,7 @@ function wait(delay) {
 
 function fetchRetry({
   url,
-  delay = 1000,
+  delay = 0,
   tries = 3,
   nativeFetchOptions = {},
   cb,
@@ -28,7 +28,7 @@ function fetchRetry({
     msgs.push(`Failed attempt: ${__attemptsDetails?.total || tries - __triesLeft + 1} of ${__attemptsDetails?.total || tries}`)
 
     logs.push(msgs.join(': '))
-    
+
     __triesLeft -= 1
     if (
       typeof cb?.onFinalError === 'function'
