@@ -11,7 +11,7 @@ import RefreshIcon from '@mui/icons-material/Refresh'
 import { Layout } from '~/common/components'
 import layoutClasses from '~/common/components/Layout/Layout.module.scss'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FormControl, MenuItem, Select, SelectChangeEvent } from '@mui/material'
 import { TStore } from '~/common/store'
 import clsx from 'clsx'
@@ -22,9 +22,16 @@ const BRAND_NAME = import.meta.env.VITE_BRAND_NAME
 
 export const HomePage = memo(() => {
   const dispatch = useDispatch()
-  const handleClick = useCallback(() => {
+  // const mainPollingKey = useSelector((s: TStore) => s.news.pollingCounter)
+  // const [urlSearchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const handleRefresh = useCallback(() => {
+    // NOTE: Reset
+    // const idToScroll = urlSearchParams.get('lastSeen')
+    // if (!!idToScroll) urlSearchParams.delete('lastSeen')
+    navigate('/')
     dispatch(refreshPolling())
-  }, [dispatch])
+  }, [dispatch, navigate])
 
   const newsMode = useSelector((s: TStore) => s.news.newsMode)
   const handleChangeNewsMode = useCallback((e: SelectChangeEvent<ENewsMode>) => {
@@ -117,7 +124,7 @@ export const HomePage = memo(() => {
             />
           )}
         >
-          <NewsList />
+          <NewsList key={newsMode} />
         </ErrorBoundary>
       </div>
 
@@ -135,11 +142,11 @@ export const HomePage = memo(() => {
           variant={loadedTagetCounter > items.length ? 'contained' : 'outlined'}
           color={
             isMainReuestErrored
-            ? 'error'
-            : loadedTagetCounter > items.length
-              ? 'success'
-              : 'primary'}
-          onClick={handleClick}
+              ? 'error'
+              : loadedTagetCounter > items.length
+                ? 'success'
+                : 'primary'}
+          onClick={handleRefresh}
           size='small'
         >
           <RefreshIcon />

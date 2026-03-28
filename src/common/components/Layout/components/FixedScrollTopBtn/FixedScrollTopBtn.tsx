@@ -17,18 +17,18 @@ export const FixedScrollTopBtn = memo(() => {
   useLayoutEffect(() => {
     scrollTopExtra()
   }, [location])
-  
+
   // -- NOTE: 1/3 Совершенно необязательный механизм,
   // просто удобный UX
   // TODO: Перенести в отдельный контекст
-  const [urlSearchParams] = useSearchParams()
-  useLayoutEffect(() => {
-    const idToScroll = urlSearchParams.get('lastSeen')
-    if (!!idToScroll) {
-      const targetElm = document.getElementById(idToScroll)
-      if (!!targetElm) targetElm.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }, [location, urlSearchParams])
+  // const [urlSearchParams] = useSearchParams()
+  // useLayoutEffect(() => {
+  //   const idToScroll = urlSearchParams.get('lastSeen')
+  //   if (!!idToScroll) {
+  //     const targetElm = document.getElementById(idToScroll)
+  //     if (!!targetElm) targetElm.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  //   }
+  // }, [location, urlSearchParams])
   // --
 
   return (
